@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>혜택찾기 — 내게 맞는 지원사업</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap">
+<style>
+:root{
+  --bg:#fff;--soft:#f5f6f7;--ink:#111418;--sub:#6b7280;--faint:#9aa1ab;--line:#eceef1;
+  --blue:#1463ff;--blue-soft:#eaf1ff;--gold:#d7b25a;--gold-soft:#faf3e1;--gold-ink:#8a6a1c;
+  --red:#e5484d;--green:#14804a;--green-soft:#e7f5ed;
+  --r:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Pretendard Variable',Pretendard,'Noto Sans KR',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.5;letter-spacing:-.2px;padding-bottom:calc(86px + env(safe-area-inset-bottom))}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:560px;margin:0 auto;padding:0 20px}
+
+/* 헤더 */
+header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.96);backdrop-filter:blur(8px)}
+header .wrap{display:flex;align-items:center;height:64px}
+.logo{font-size:26px;font-weight:900;letter-spacing:-1.2px;display:flex;align-items:center;gap:6px}
+.logo i{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--blue);color:#fff;font-style:normal;font-size:15px;font-weight:800;letter-spacing:0}
+header .icons{margin-left:auto;display:flex;gap:6px}
+.ib{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;position:relative}
+.ib:active{background:var(--soft)}
+.ib svg{width:25px;height:25px}
+.dot[hidden]{display:none!important}
+.dot{position:absolute;top:7px;right:7px;min-width:17px;height:17px;border-radius:9px;background:var(--red);color:#fff;font-size:10.5px;font-weight:700;display:grid;place-items:center;padding:0 4px}
+
+section.view{display:none;padding-top:6px}section.view.on{display:block}
+.title{font-size:28px;font-weight:800;letter-spacing:-.8px;margin:12px 0 18px;display:flex;align-items:baseline}
+.title small{margin-left:auto;font-size:15px;font-weight:500;color:var(--faint)}
+.sub-title{font-size:19px;font-weight:800;margin:28px 0 4px;display:flex;align-items:baseline}
+.sub-title small{margin-left:auto;font-size:14px;font-weight:500;color:var(--faint)}
+.desc{font-size:14.5px;color:var(--sub)}
+
+/* 분류 버튼 */
+.pills{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:6px}
+.pills button{height:54px;border:1.5px solid var(--line);border-radius:18px;font-size:16.5px;font-weight:700;color:#4b525c}
+.pills button.on{background:var(--ink);border-color:var(--ink);color:var(--gold)}
+
+/* 카드·목록 */
+.box{border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:0 6px 24px rgba(17,20,24,.05);margin-top:18px}
+.inner{background:var(--soft);border-radius:18px;padding:10px}
+.rows{border-top:1px solid var(--line)}
+.row{display:flex;align-items:center;gap:14px;padding:16px 2px;border-bottom:1px solid var(--line);cursor:pointer}
+.inner .row{background:#fff;border:0;border-radius:15px;padding:15px 14px;margin:8px 0}
+.inner .row:first-child{margin-top:0}.inner .row:last-child{margin-bottom:0}
+.row:active{opacity:.7}
+.num{flex:none;width:34px;height:34px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font-size:15px;font-weight:800}
+.num.fill{background:var(--blue);border-color:var(--blue);color:#fff}
+.row .mid{flex:1;min-width:0}
+.row .meta{font-size:13px;color:var(--faint);font-weight:600;margin-bottom:2px}
+.row h3{font-size:16.5px;font-weight:800;line-height:1.35;word-break:keep-all}
+.row .org{font-size:14px;color:var(--sub);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .right{flex:none;text-align:right;font-size:14.5px;font-weight:800;color:var(--faint);max-width:96px;line-height:1.3}
+.row .right.b{color:var(--blue)}.row .right.r{color:var(--red)}
+.chev{flex:none;color:#c3c8cf;font-size:20px}
+.tagline{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.tg{font-size:11.5px;font-weight:700;border-radius:7px;padding:2px 7px;background:var(--soft);color:var(--sub)}
+.tg.ok{background:var(--green-soft);color:var(--green)}.tg.chk{background:var(--gold-soft);color:var(--gold-ink)}.tg.b{background:var(--blue-soft);color:var(--blue)}
+.ex{display:inline-block;background:var(--ink);color:#fff;font-size:14px;font-weight:800;border-radius:999px;padding:5px 14px;margin:0 0 10px 6px}
+.empty{text-align:center;color:var(--faint);font-size:15px;padding:34px 10px;line-height:1.6}
+.more{display:block;width:100%;text-align:center;padding:14px;font-size:15px;font-weight:700;color:var(--sub)}
+
+/* 큰 버튼 */
+.btn{display:block;width:100%;height:58px;border-radius:18px;background:var(--ink);color:#fff;font-size:17.5px;font-weight:800;text-align:center;line-height:58px}
+.btn.blue{background:var(--blue)}.btn.gold{background:var(--gold);color:var(--ink)}
+.btn.line{background:#fff;color:var(--ink);border:1.5px solid var(--line);line-height:55px}
+.btn:disabled{background:#d3d7dd;color:#fff;cursor:default}
+.btn+.btn{margin-top:10px}
+.center{text-align:center}
+.lead{font-size:22px;font-weight:800;letter-spacing:-.6px;line-height:1.4;margin:26px 0 8px}
+.lead-sub{font-size:15.5px;color:var(--sub);margin-bottom:12px}
+.blue-t{color:var(--blue);font-weight:800;font-size:16.5px;line-height:1.5;margin:6px 0 20px}
+
+/* 다크 안내 카드 */
+.dark{background:var(--ink);color:#fff;border-radius:26px;padding:26px 24px;margin-top:22px}
+.dark h3{font-size:21px;font-weight:800;line-height:1.45;letter-spacing:-.5px;margin-bottom:18px}
+.dark li{list-style:none;display:flex;gap:12px;margin:14px 0}
+.dark li b{display:block;font-size:17px}
+.dark li span{font-size:14.5px;color:#aeb4bd}
+.dark li::before{content:'✓';color:var(--gold);font-weight:800;font-size:18px}
+.dark .btn{margin-top:22px}
+
+/* 할 일 */
+.todo{border:1px solid var(--line);border-radius:var(--r);padding:20px;margin-bottom:14px;box-shadow:0 6px 24px rgba(17,20,24,.05)}
+.todo .hd{display:flex;align-items:center;gap:10px}
+.todo .n{width:32px;height:32px;border-radius:50%;background:#6b7280;color:#fff;display:grid;place-items:center;font-weight:800;font-size:15px}
+.stg{font-size:14px;font-weight:800;border-radius:999px;padding:5px 13px;background:var(--gold-soft);color:var(--gold-ink)}
+.stg.s1{background:var(--blue-soft);color:var(--blue)}.stg.s2{background:var(--green-soft);color:var(--green)}
+.todo .dd{font-size:15px;font-weight:800;color:var(--sub)}
+.todo h3{font-size:20px;font-weight:800;margin:14px 0 2px;letter-spacing:-.5px;word-break:keep-all}
+.todo .org{color:var(--faint);font-size:15px}
+.steps{display:flex;margin:22px 0 8px;position:relative}
+.steps::before{content:'';position:absolute;top:7px;left:16.6%;right:16.6%;height:2px;background:var(--line)}
+.steps div{flex:1;text-align:center;font-size:14.5px;color:var(--faint);position:relative}
+.steps div i{display:block;width:16px;height:16px;border-radius:50%;background:#e3e6ea;margin:0 auto 6px}
+.steps div.done{color:var(--ink)}.steps div.done i{background:#6b7280}
+.steps div.cur{color:var(--ink);font-weight:800}.steps div.cur i{background:var(--gold);box-shadow:0 0 0 6px var(--gold-soft)}
+.todo .acts{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:15px;font-weight:800}
+.todo .acts button{color:var(--sub);padding:6px 0}
+.todo .acts .go{color:var(--ink)}
+.bar{height:6px;border-radius:3px;background:var(--soft);margin-top:14px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold)}
+.barlab{font-size:13px;color:var(--sub);margin-top:6px}
+
+/* 내 서류 */
+.menu .mi{display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
+.menu .ic{color:var(--ink);flex:none;width:58px;height:58px;border-radius:17px;background:#fff;box-shadow:0 3px 12px rgba(17,20,24,.09);display:grid;place-items:center;font-size:24px}
+.menu .mi b{display:block;font-size:18px;font-weight:800}
+.menu .mi span{font-size:14.5px;color:var(--sub)}
+.doc{display:flex;gap:13px;align-items:flex-start;padding:15px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.doc .ck{flex:none;width:26px;height:26px;border-radius:8px;border:2px solid #cfd3d9;display:grid;place-items:center;color:#fff;font-weight:900;font-size:15px;margin-top:1px}
+.doc.on .ck{background:var(--blue);border-color:var(--blue)}
+.doc.on b{color:var(--faint);text-decoration:line-through}
+.doc b{display:block;font-size:16px;font-weight:700;word-break:keep-all}
+.doc span{font-size:13px;color:var(--sub)}
+
+/* 매칭 */
+.hero{background:var(--soft);border-radius:var(--r);padding:20px}
+.hero .k{font-size:15px;color:var(--sub);font-weight:600}
+.hero .big{font-size:40px;font-weight:900;letter-spacing:-1.5px;line-height:1.15}
+.hero .big small{font-size:18px;font-weight:700;margin-left:2px}
+.hero .s{font-size:14.5px;color:var(--sub);margin-top:4px}
+.hero .cond{font-size:14px;margin-top:12px;padding-top:12px;border-top:1px solid #e4e7eb;display:flex;gap:10px;align-items:flex-start}
+.hero .cond span{flex:1}
+.hero .cond button{flex:none;font-weight:800;color:var(--blue);font-size:14px}
+.tabs{display:flex;gap:6px;margin:18px 0 10px}
+.tabs button{height:40px;padding:0 15px;border-radius:999px;border:1.5px solid var(--line);font-size:15px;font-weight:700;color:#4b525c;white-space:nowrap}
+.tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chipx{display:flex;gap:6px;overflow-x:auto;margin:0 -20px;padding:0 20px 6px;scrollbar-width:none}
+.chipx::-webkit-scrollbar{display:none}
+.chipx button{flex:none;height:34px;padding:0 12px;border-radius:999px;background:var(--soft);font-size:14px;font-weight:600;color:var(--sub)}
+.chipx button.on{background:var(--blue-soft);color:var(--blue);font-weight:800}
+.sw{display:flex;align-items:center;gap:8px;font-size:14.5px;color:var(--sub);margin:12px 0 4px;cursor:pointer}
+.sw input{width:20px;height:20px;accent-color:var(--blue)}
+
+/* 조건 선택 */
+.q{padding:22px 0;border-bottom:1px solid var(--line)}
+.q h3{font-size:19px;font-weight:800}
+.q .h{font-size:14px;color:var(--faint);margin:2px 0 12px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{height:46px;padding:0 17px;border-radius:14px;border:1.5px solid var(--line);font-size:16px;font-weight:600}
+.opt.on{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:800}
+.q input{width:150px;height:52px;border:1.5px solid var(--line);border-radius:14px;font:inherit;font-size:22px;font-weight:800;padding:0 16px}
+.q input:focus,.field:focus{outline:0;border-color:var(--ink)}
+.setup-bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:10px 20px calc(12px + env(safe-area-inset-bottom));z-index:7;display:none}
+.setup-bar .c{font-size:14px;color:var(--sub);text-align:center;margin-bottom:8px;min-height:21px}
+body.setup{padding-bottom:150px}body.setup .setup-bar{display:block}body.setup nav{display:none}
+.link{font-size:14px;color:var(--faint);text-decoration:underline;padding:14px 0}
+.field{width:100%;height:52px;border:1.5px solid var(--line);border-radius:14px;font:inherit;font-size:16px;padding:0 15px;background:#fff}
+select.field{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239aa1ab' stroke-width='2' fill='none'/%3E%3C/svg%3E") no-repeat right 16px center}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+
+/* 하단 탭 */
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);z-index:6;padding-bottom:env(safe-area-inset-bottom)}
+nav .wrap{display:flex;padding:0 6px}
+nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 0 9px;font-size:13px;font-weight:700;color:var(--faint);position:relative}
+nav a svg{width:26px;height:26px}
+nav a.on{color:var(--ink)}
+nav a .dot{top:4px;right:calc(50% - 22px)}
+
+/* 상세 */
+.sheet-bg{position:fixed;inset:0;background:rgba(17,20,24,.45);z-index:10;display:none}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-height:92vh;overflow:auto;background:#fff;border-radius:26px 26px 0 0;z-index:11;padding:12px 22px calc(26px + env(safe-area-inset-bottom));display:none;max-width:560px;margin:0 auto}
+.sheet.on,.sheet-bg.on{display:block}
+.grab{width:42px;height:5px;border-radius:3px;background:#dfe2e6;margin:0 auto 14px}
+.sheet h2{font-size:23px;font-weight:800;letter-spacing:-.6px;line-height:1.35;margin:10px 0 4px;word-break:keep-all}
+.sheet .org{color:var(--sub);font-size:15px}
+.x{float:right;width:36px;height:36px;border-radius:50%;background:var(--soft);font-size:17px}
+.sum{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:18px 0 6px}
+.sum div{background:var(--soft);border-radius:15px;padding:12px 14px}
+.sum dt{font-size:12.5px;color:var(--sub);font-weight:600}
+.sum dd{font-size:15.5px;font-weight:800;margin-top:2px;word-break:keep-all}
+.kv dt{font-size:13.5px;color:var(--faint);font-weight:700;margin-top:18px}
+.kv dd{font-size:15.5px;margin-top:3px;word-break:keep-all}
+.warn{background:var(--gold-soft);color:#6d5313;border-radius:15px;padding:13px 15px;font-size:14.5px;margin-top:14px}
+.warn b{display:block;margin-bottom:2px}
+.foot{font-size:12.5px;color:var(--faint);margin:26px 0 10px;line-height:1.6}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="logo" href="#home"><i>✓</i>혜택찾기</a>
+  <div class="icons">
+    <a class="ib" href="#alert" aria-label="알림"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 1 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9"/><path d="M10.3 20a1.9 1.9 0 0 0 3.4 0"/></svg><span class="dot" id="bellDot" hidden></span></a>
+    <a class="ib" href="#me" aria-label="내 정보"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></a>
+  </div>
+</div></header>
+
+<main class="wrap">
+
+<!-- 홈 -->
+<section class="view" id="v-home">
+  <div class="pills" id="pills"></div>
+  <div id="homeTop"></div>
+  <div class="sub-title"><span id="listTitle"></span><small id="listCount"></small></div>
+  <div class="rows" id="homeList" style="margin-top:12px"></div>
+  <p class="foot" id="homeFoot"></p>
+</section>
+
+<!-- 할 일 -->
+<section class="view" id="v-todo">
+  <h1 class="title">이번 달 할 일<small id="todoCount"></small></h1>
+  <div id="todoList"></div>
+</section>
+
+<!-- 알림 -->
+<section class="view" id="v-alert">
+  <h1 class="title">알림<small id="alertCount"></small></h1>
+  <div class="rows" id="alertList"></div>
+  <div id="serverNoti"></div>
+</section>
+
+<!-- 매칭 -->
+<section class="view" id="v-match">
+  <h1 class="title">매칭</h1>
+  <div id="matchBody"></div>
+</section>
+
+<!-- 내 서류 -->
+<section class="view" id="v-docs">
+  <h1 class="title">내 서류<small id="docCount"></small></h1>
+  <div id="docBody"></div>
+</section>
+
+<!-- 전체 검색 -->
+<section class="view" id="v-search">
+  <h1 class="title">전체 검색</h1>
+  <input class="field" type="search" id="q" placeholder="사업명·기관·키워드 (예: 귀어, 월세)">
+  <div class="grid2">
+    <select class="field" id="fCat"><option value="">모든 분야</option></select>
+    <select class="field" id="fStatus">
+      <option value="">모든 상태</option><option value="open">지금 신청 가능</option><option value="soon">마감 임박</option>
+      <option value="plan">시작 예정</option><option value="notice">공고 확인 필요</option><option value="closed">마감</option>
+    </select>
+    <select class="field" id="fRegion"><option value="">전국 + 모든 지역</option></select>
+    <select class="field" id="fKind"><option value="">모든 지원 방식</option></select>
+  </div>
+  <div class="sub-title"><span>검색 결과</span><small id="searchCount"></small></div>
+  <div class="rows" id="searchList" style="margin-top:12px"></div>
+</section>
+
+<!-- 조건 선택 -->
+<section class="view" id="v-setup">
+  <h1 class="title">내 조건 선택</h1>
+  <p class="desc">해당되는 것만 눌러 주세요. 고르지 않은 항목은 ‘조건 확인’으로 분류돼요. 입력한 내용은 이 기기에만 저장돼요.</p>
+  <div class="q"><h3>어디에 사세요?</h3><p class="h">거주지에 따라 지자체 사업이 달라져요</p><div class="opts" id="qRegion"></div>
+    <div id="qCityWrap" hidden><p class="h" style="margin-top:16px">시·군</p><div class="opts" id="qCity"></div></div></div>
+  <div class="q"><h3>만 나이</h3><p class="h">숫자만 입력하세요</p><input type="number" id="qAge" min="0" max="120" inputmode="numeric" placeholder="42"></div>
+  <div class="q"><h3>자녀</h3><p class="h">막내 자녀의 만 나이</p><div class="opts" id="qChild"></div></div>
+  <div class="q"><h3>하는 일</h3><p class="h">해당하는 걸 모두 눌러 주세요</p><div class="opts" id="qJobs"></div></div>
+  <div class="q"><h3>소득 수준</h3><p class="h">모르면 건너뛰어도 돼요</p><div class="opts" id="qIncome"></div></div>
+  <div class="q" style="border:0"><h3>사는 집</h3><p class="h">주거 지원 비교에 쓰여요</p><div class="opts" id="qHouse"></div></div>
+  <button class="link" id="resetDraft" type="button">선택 모두 지우기</button>
+  <div class="setup-bar"><div class="wrap" style="padding:0">
+    <div class="c" id="setupCnt"></div>
+    <button class="btn" id="setupDone" type="button">내 혜택 보기</button>
+  </div></div>
+</section>
+
+<!-- 내 정보 -->
+<section class="view" id="v-me">
+  <h1 class="title">내 정보</h1>
+  <div class="hero"><div class="k">내 조건</div><div style="font-size:16px;font-weight:700;margin-top:4px" id="meCond"></div></div>
+  <a class="btn" href="#setup" style="margin-top:12px">조건 수정하기</a>
+  <button class="link" id="clearProfile" type="button">내 조건 지우기</button>
+  <div class="sub-title">마감 알림 이메일<small>선택</small></div>
+  <p class="desc" style="margin-bottom:10px">서버 버전에서만 보내져요. 비워두면 앱 알림에만 표시돼요.</p>
+  <input class="field" type="email" id="pEmail" inputmode="email" placeholder="example@email.com">
+  <div class="sub-title">관심 사업<small id="favCount"></small></div>
+  <div class="rows" id="favList" style="margin-top:12px"></div>
+  <p class="foot">개인정보는 서버로 보내지 않고 이 기기에만 저장돼요. 건강·장애 같은 민감정보는 묻지 않아요. 정보 최종 확인 <span id="lastChecked"></span></p>
+</section>
+
+</main>
+
+<nav><div class="wrap">
+  <a href="#home" data-v="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3.5 10.5 12 3.5l8.5 7V20a.5.5 0 0 1-.5.5h-5v-6h-6v6H4a.5.5 0 0 1-.5-.5z"/></svg>홈</a>
+  <a href="#todo" data-v="todo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="m8 12 3 3 5-6"/></svg>할 일<span class="dot" id="todoDot" hidden></span></a>
+  <a href="#alert" data-v="alert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v10a1.5 1.5 0 0 1-1.5 1.5H9l-5 3.5z"/><path d="M8 9h8M8 12.5h5"/></svg>알림</a>
+  <a href="#match" data-v="match"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>매칭</a>
+  <a href="#docs" data-v="docs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 3.5h8l4.5 4.5v12a.5.5 0 0 1-.5.5H6a.5.5 0 0 1-.5-.5V4a.5.5 0 0 1 .5-.5z"/><path d="M13.5 3.5V8.5h5"/></svg>내 서류</a>
+</div></nav>
+
+<div class="sheet-bg" id="sheetBg"></div>
+<div class="sheet" id="sheet"></div>
+
+<script>
+/* ==========================================================
+   데이터 — 금액·기간은 공고 원문 재확인 원칙.
+   verify: 'official' 기관 공식 확인 / 'secondary' 2차 출처(원문 재확인 필요) / 'gov24' 공공서비스 API
+   ========================================================== */
+// 혜택찾기 큐레이션 데이터 — 웹앱과 서버가 함께 사용
+const LAST_CHECKED = '2026-11-16';
+
+const CATS = [
+  {id:'birth',name:'육아·출산',icon:'👶'},
+  {id:'youth',name:'청년',icon:'🧑'},
+  {id:'senior',name:'노인·고령층',icon:'🧓'},
+  {id:'lowinc',name:'저소득·취약계층',icon:'🤝'},
+  {id:'house',name:'주거',icon:'🏠'},
+  {id:'edu',name:'교육·장학금',icon:'🎓'},
+  {id:'job',name:'취업·직업훈련',icon:'💼'},
+  {id:'startup',name:'창업·사업화',icon:'🚀'},
+  {id:'smb',name:'소상공인·자영업',icon:'🏪'},
+  {id:'farm',name:'농업·귀농',icon:'🌾'},
+  {id:'fish',name:'어업·귀어',icon:'🐙'},
+  {id:'culture',name:'문화·여가',icon:'🎭'},
+  {id:'energy',name:'에너지',icon:'⚡'},
+  {id:'local',name:'우리 지역',icon:'📍'},
+  {id:'health',name:'건강·의료',icon:'🏥'},
+  {id:'etc',name:'기타 생활',icon:'📌'},
+];
+
+const REGIONS = ['서울','부산','대구','인천','광주','대전','울산','세종','경기','강원','충북','충남','전북','전남','경북','경남','제주'];
+
+const JOBS = [
+  {id:'jobseeker',name:'구직 중'},{id:'worker',name:'직장인'},{id:'self',name:'자영업·소상공인'},
+  {id:'prestart',name:'예비창업자'},{id:'fisher',name:'어업인'},{id:'fishhope',name:'귀어 희망'},
+  {id:'farmer',name:'농업인'},{id:'farmhope',name:'귀농 희망'},{id:'student',name:'대학생'}
+];
+
+const P = [
+{id:'parent-pay',name:'부모급여',org:'보건복지부',cats:['birth'],region:'all',type:'현금',
+ target:'만 2세 미만(0~23개월) 아동을 키우는 가정',content:'영아 양육비를 매월 현금 지급(어린이집 이용 시 보육료 바우처 차감 후 차액 지급)',
+ amount:'만 0세 월 100만원 · 만 1세 월 50만원',income:'소득·재산 기준 없음',
+ period:{type:'always'},how:'복지로·정부24 온라인 또는 주소지 읍·면·동 행정복지센터. 출생일 포함 60일 이내 신청 시 출생월부터 소급',
+ docs:['신청서(행정복지센터 비치 / 온라인 작성)','신분증','통장 사본(지급 계좌)'],
+ url:'https://www.bokjiro.go.kr',contact:'보건복지상담센터 129',verify:'secondary',
+ rules:[{t:'child',max:1}]},
+
+{id:'child-allow',name:'아동수당',org:'보건복지부',cats:['birth'],region:'all',type:'현금',
+ target:'만 9세 미만 아동 (2026년 만 8세→9세 미만으로 확대)',content:'아동 1인당 매월 수당 지급. 2030년까지 매년 1세씩 대상 확대 예정',
+ amount:'월 10만원~13만원 (수도권·비수도권·인구감소지역에 따라 차등)',income:'소득·재산 기준 없음',
+ period:{type:'always'},how:'복지로·정부24 또는 읍·면·동 행정복지센터',
+ docs:['신청서','신분증','통장 사본'],url:'https://www.bokjiro.go.kr',contact:'보건복지상담센터 129',verify:'secondary',
+ rules:[{t:'child',max:8}]},
+
+{id:'first-meet',name:'첫만남이용권',org:'보건복지부',cats:['birth'],region:'all',type:'바우처',
+ target:'출생 신고된 아동',content:'국민행복카드에 바우처 포인트 지급. 출생일로부터 1년 이내 사용, 기한 지나면 소멸',
+ amount:'첫째 200만원 · 둘째 이상 300만원',income:'소득·재산 기준 없음',
+ period:{type:'always'},how:'복지로·정부24(출산 서비스 통합처리) 또는 행정복지센터',
+ docs:['신청서','국민행복카드(발급 신청 가능)'],url:'https://www.bokjiro.go.kr',contact:'보건복지상담센터 129',verify:'secondary',
+ rules:[{t:'child',max:0}]},
+
+{id:'idolbom',name:'아이돌봄서비스 정부지원',org:'성평등가족부',cats:['birth'],region:'all',type:'서비스',
+ target:'만 12세 이하 아동 가정 중 양육 공백 가정(맞벌이·한부모 등)',content:'아이돌보미가 가정을 방문해 돌봄. 이용요금 일부를 정부가 지원',
+ amount:'소득구간별 정부지원 비율 차등 (금액은 공식 안내 확인)',income:'2026년 정부지원 기준: 기준중위소득 250% 이하로 확대',
+ period:{type:'always'},how:'아이돌봄서비스 누리집 또는 행정복지센터',
+ docs:['신청서','소득 확인 서류(건강보험료 등)','맞벌이 증빙(재직증명 등)'],url:'https://idolbom.go.kr',contact:'1577-2514',verify:'secondary',
+ rules:[{t:'child',max:12},{t:'soft',label:'맞벌이·한부모 등 양육 공백 여부 확인'}]},
+
+{id:'youth-rent',name:'청년월세 지원',org:'국토교통부',cats:['youth','house'],region:'all',type:'현금',
+ target:'부모와 따로 사는 무주택 청년(연령·소득 기준은 공고 확인)',content:'월세 실납부액 지원. 2026년부터 한시 사업에서 상시 사업으로 전환',
+ amount:'월 최대 20만원 · 최대 24개월 (최대 480만원)',income:'청년가구·원가구 소득·재산 기준 있음 — 공고 확인',
+ period:{type:'always'},how:'복지로 온라인 또는 주소지 행정복지센터',
+ docs:['신청서','임대차계약서','월세 이체 내역','가족관계증명서'],url:'https://www.bokjiro.go.kr',contact:'마이홈 콜센터 1600-1004',verify:'secondary',
+ rules:[{t:'age',min:19,max:34},{t:'house',in:['rent']},{t:'soft',label:'청년·원가구 소득·재산 기준 확인 (주거급여와 중복 불가)'}]},
+
+{id:'kua',name:'국민취업지원제도 (구직촉진수당)',org:'고용노동부',cats:['job','youth'],region:'all',type:'현금',
+ target:'취업을 원하는 저소득 구직자·청년',content:'취업지원 서비스 + 구직활동 기간 구직촉진수당 지급(1유형)',
+ amount:null,amountNote:'출처 간 금액이 다름(월 50만원 / 2026년 60만원 인상 보도) — 고용24 공고로 확인',
+ income:'유형별 가구 소득·재산 기준 있음',
+ period:{type:'always'},how:'고용24 온라인 신청 또는 고용센터 방문',
+ docs:['참여 신청서','소득·재산 확인 동의'],url:'https://www.work24.go.kr',contact:'고용노동부 고객상담센터 1350',verify:'secondary',
+ rules:[{t:'job',in:['jobseeker']},{t:'age',min:15,max:69},{t:'soft',label:'유형별 소득·재산 기준 확인'}]},
+
+{id:'energy-voucher',name:'에너지바우처',org:'기후에너지환경부 · 한국에너지공단',cats:['energy','lowinc'],region:'all',type:'바우처',
+ target:'생계·의료·주거·교육급여 수급 세대 중 노인·영유아·장애인·임산부 등 세대원 특성 해당',content:'전기·도시가스·지역난방·등유·LPG·연탄 요금 지원. 2026년부터 여름·겨울 구분 없이 사용',
+ amount:'세대원 수별 연간 차등 · 1인 세대 약 29만5천원 ~ 4인 이상 최대 70만1,300원',income:'기초생활보장 급여 수급자',
+ period:{start:'2026-06-15',end:'2026-12-31'},how:'주소지 읍·면·동 행정복지센터 방문 신청',
+ docs:['신청서','신분증'],url:'https://www.energyv.or.kr',contact:'에너지바우처 콜센터 1600-3190',verify:'secondary',
+ rules:[{t:'income',in:['recipient']},{t:'soft',label:'세대원 특성(노인·영유아·장애인 등) 해당 여부 확인'}]},
+
+{id:'munhwa-nuri',name:'문화누리카드 (통합문화이용권)',org:'문화체육관광부',cats:['culture','lowinc'],region:'all',type:'바우처',
+ target:'만 6세 이상 기초생활수급자·차상위계층',content:'문화예술·국내여행·체육활동에 쓰는 카드. 사용기한 2026.12.31, 잔액은 이월 안 됨',
+ amount:'1인당 연 15만원 (청소년기·준고령기 생애주기 +1만원)',income:'기초생활수급자 또는 차상위계층',
+ period:{start:'2026-02-02',end:'2026-11-30'},how:'문화누리카드 누리집(mnuri.kr)·모바일앱·주민센터. 시군구 예산 소진 시 조기 마감',
+ docs:['신분증 (주민센터 방문 시)'],url:'https://www.mnuri.kr',contact:'고객지원센터 1544-3412',verify:'official',
+ source:'문화체육관광부 정책 안내 페이지 (최종수정 2026.02.02)',
+ rules:[{t:'age',min:6,max:120},{t:'income',in:['recipient','nearpoor']}]},
+
+{id:'basic-pension',name:'기초연금',org:'보건복지부',cats:['senior'],region:'all',type:'현금',
+ target:'만 65세 이상, 소득인정액 하위 70% 수준',content:'매월 연금 지급. 2026년 근로소득 공제액 116만원으로 상향',
+ amount:'기준연금액 월 349,700원 (소득·부부 여부에 따라 감액될 수 있음)',income:'소득인정액이 선정기준액 이하',
+ period:{type:'always'},how:'국민연금공단 지사·행정복지센터·복지로. 만 65세 생일 1개월 전부터 신청',
+ docs:['신청서','신분증','통장 사본','금융정보 제공 동의서'],url:'https://basicpension.mohw.go.kr',contact:'국민연금 1355 / 보건복지상담센터 129',verify:'secondary',
+ rules:[{t:'age',min:65,max:120},{t:'soft',label:'소득인정액 선정기준 확인'}]},
+
+{id:'eitc',name:'근로장려금',org:'국세청',cats:['lowinc','job'],region:'all',type:'세금환급',
+ target:'소득·재산 기준을 충족하는 근로·사업·종교인 소득 가구',content:'연 1회 정기신청(5월) + 근로소득자 반기신청(3월·9월)',
+ amount:null,amountNote:'가구 유형·총급여액에 따라 산정 — 홈택스 모의계산 이용',income:'가구별 총소득·재산 기준',
+ period:{type:'plan',note:'2026년 하반기 반기신청(9.1~9.15) 종료 · 다음 정기신청은 2027년 5월(국세청 공고 확인)'},
+ how:'홈택스·손택스 또는 ARS(1544-9944)',docs:['안내문 수신 시 별도 서류 대부분 불필요'],url:'https://www.hometax.go.kr',contact:'국세상담센터 126',verify:'secondary',
+ rules:[{t:'job',in:['worker','self','fisher','farmer']},{t:'soft',label:'가구 총소득·재산 기준 확인'}]},
+
+{id:'kosaf-27-1',name:'국가장학금 (2027학년도 1학기 1차)',org:'교육부 · 한국장학재단',cats:['edu','youth'],region:'all',type:'장학금',
+ target:'대한민국 국적 대학생(재학생은 1차 신청 원칙)',content:'소득구간에 따라 등록금 지원. 2027년 1학기부터 지원구간 10구간→5구간(가~마) 개편',
+ amount:'구간별 연 100만원 ~ 등록금 전액 (2026학년도 기준)',income:'학자금 지원구간(소득인정액) 기준',
+ period:{type:'plan',note:'2026년 11월 말~12월 말 예정 — 정확한 날짜는 한국장학재단 공고 확인'},
+ how:'한국장학재단 누리집·앱 신청 + 가구원 정보제공 동의',docs:['가구원 정보제공 동의','재단 요청 시 추가서류'],url:'https://www.kosaf.go.kr',contact:'1599-2000',verify:'secondary',
+ rules:[{t:'job',in:['student']}]},
+
+{id:'pre-startup-26',name:'예비창업패키지 (2026년도)',org:'중소벤처기업부 · 창업진흥원',cats:['startup'],region:'all',type:'사업화자금',
+ target:'공고일 기준 사업자등록·법인설립 이력 없는 예비창업자',content:'혁신 기술·BM 보유 예비창업자 사업화 자금·교육·멘토링',
+ amount:null,amountNote:'공고문 기준 — 2027년도 공고 확인',income:'해당 없음',
+ period:{start:'2026-02-27',end:'2026-03-24'},how:'K-Startup 누리집 온라인 접수',docs:['사업계획서(지정 양식)','증빙서류'],
+ url:'https://www.k-startup.go.kr',contact:'창업진흥원 1357',verify:'official',source:'중소벤처기업부 공고 제2026-143호(수정 공고)',
+ rules:[{t:'job',in:['prestart']}]},
+
+{id:'semas-loan',name:'소상공인 정책자금',org:'중소벤처기업부 · 소상공인시장진흥공단',cats:['smb'],region:'all',type:'융자',
+ target:'사업자등록을 한 소상공인',content:'2026년 역대 최대 5.4조원, 26개 부문으로 세분화된 저리 융자',
+ amount:null,amountNote:'자금 종류별 한도·금리 상이 — 공고 확인',income:'업종·업력·신용 등 자금별 기준',
+ period:{type:'notice',note:'자금별 접수 일정·예산 소진 여부 확인 필요'},how:'소상공인 정책자금 누리집 온라인 신청',
+ docs:['사업자등록증','부가세 과세표준증명','신분증'],url:'https://ols.semas.or.kr',contact:'소상공인 콜센터 1533-0100',verify:'secondary',
+ rules:[{t:'job',in:['self']}]},
+
+{id:'gwieo-loan',name:'귀어 창업 및 주택구입 지원 (융자)',org:'해양수산부 · 시·군·구',cats:['fish','startup','house'],region:'all',type:'융자',
+ target:'귀어업인(희망자 포함)·재촌비어업인, 사업신청 연도 기준 만 65세 이하',content:'수산업·어촌비즈니스 창업자금과 주택 구입·신축 자금 저리 융자 (이차보전)',
+ amount:'창업 최대 3억원 · 주택 최대 7,500만원 (5년 거치 10년 분할상환)',income:'금리는 지자체·연도 공고별 상이(연 1.5~2.0% 사례) · 금융기관 신용·담보 심사 별도',
+ period:{type:'notice',note:'시·군·구별 공고(연중 수차례). 거주 예정 지역 해양수산 부서 공고 확인'},
+ how:'귀어 예정지 시·군·구 해양수산 담당부서 방문 접수',docs:['신청서','사업계획서','귀어 교육 이수증','가족관계증명서'],
+ url:'https://www.sealife.go.kr',contact:'귀어귀촌종합센터 1899-9597',verify:'official',source:'인천광역시 귀어·귀촌 사업개요 페이지',
+ rules:[{t:'age',min:18,max:65},{t:'job',in:['fishhope','fisher']},{t:'soft',label:'귀어 교육 이수 시간 등 세부 요건 확인'}]},
+
+{id:'youth-fisher',name:'청년어업인 정착지원 (영어정착자금)',org:'해양수산부',cats:['fish','youth'],region:'all',type:'현금',
+ target:'어업 경력이 짧은 청년 어업인(연령 기준 공고 확인)',content:'청년 어업인 어촌 유입·정착을 위해 정착자금을 최장 3년 월별 지급',
+ amount:'1년차 월 110만원 · 2년차 월 100만원 · 3년차 월 90만원',income:'공고 기준 확인',
+ period:{type:'notice',note:'연 1회 내외 시·군·구 모집 — 2027년도 공고 확인'},how:'주소지 시·군·구 해양수산 담당부서',
+ docs:['신청서','어업경영체 등록 확인서','영어계획서'],url:'https://www.sealife.go.kr',contact:'귀어귀촌종합센터 1899-9597',verify:'official',source:'인천광역시 귀어·귀촌 정책 페이지',
+ rules:[{t:'age',min:18,max:39},{t:'job',in:['fisher','fishhope']},{t:'soft',label:'어업 경력·연령 상한 공고 확인'}]},
+
+{id:'fish-direct',name:'수산자원 보호 직접지불금',org:'해양수산부',cats:['fish'],region:'all',type:'현금',
+ target:'총허용어획량(TAC) 준수·자율 휴어 등 수산자원 보호 활동에 참여하는 연근해어선',content:'강화된 수산자원 보호 활동 참여 어업인에게 직불금 지급',
+ amount:null,amountNote:'어선 규모·활동별 산정 — 공고 확인',income:'해당 없음',
+ period:{start:'2026-01-01',end:'2026-12-31'},how:'관할 시·군·구 해양수산 담당부서',docs:['신청서','어선 관련 증빙'],
+ url:'https://www.mof.go.kr',contact:'해양수산부 044-200-5114',verify:'secondary',
+ rules:[{t:'job',in:['fisher']},{t:'soft',label:'연근해어선 보유·보호활동 참여 요건 확인'}]},
+
+{id:'youth-fishboat',name:'어선청년임대사업 (2026년)',org:'해양수산부 · 한국수산자원공단',cats:['fish','youth'],region:'all',type:'서비스',
+ target:'연안어업에 도전하는 청년 어업인',content:'어선 임대 연계 + 임차료 지원(2026년 지원 비율 상향, 어구 구입비 신규 지원)',
+ amount:null,amountNote:'임차료 지원 비율 공고 확인',income:'해당 없음',
+ period:{start:'2026-02-26',end:'2026-03-26'},how:'한국수산자원공단 접수',docs:['신청서','공고 지정 서류'],
+ url:'https://www.fira.or.kr',contact:'한국수산자원공단',verify:'secondary',
+ rules:[{t:'age',min:18,max:39},{t:'job',in:['fisher','fishhope']}]},
+
+{id:'youth-farmer',name:'청년농업인 영농정착지원 (2026년 1차)',org:'농림축산식품부',cats:['farm','youth'],region:'all',type:'현금',
+ target:'청년 창업농·후계농',content:'영농정착지원금 월별 지급 + 창업자금·교육·농지 연계',
+ amount:null,amountNote:'지침 기준 확인',income:'지침 기준 확인',
+ period:{type:'closed',note:'2026년 1차 모집은 2025.11.5 시작 후 종료 · 2027년도 모집 공고 확인'},how:'시·군 농업기술센터·농정 부서 / 온라인 접수',docs:['신청서','영농계획서'],
+ url:'https://www.mafra.go.kr',contact:'농림축산식품부 청년농육성정책팀',verify:'official',source:'농식품부 보도자료(2025.11.04)',
+ rules:[{t:'age',min:18,max:39},{t:'job',in:['farmer','farmhope']}]},
+
+{id:'youth-startup-fund',name:'청년전용창업자금',org:'중소벤처기업부 · 중소벤처기업진흥공단',cats:['startup','youth'],region:'all',type:'융자',
+ target:'만 39세 이하, 창업 3년 이내 청년 창업자(예비창업자 신청 가능)',content:'운전·시설자금 저리 융자 (거치 3년 + 상환 3년)',
+ amount:'최대 1억원 (연 3.0~3.5% 고정금리 보도 기준)',income:'업종 제한 있음(유흥·금융 등 제외)',
+ period:{type:'notice',note:'예산 소진 시 마감 — 중진공 접수 현황 확인'},how:'중소벤처기업진흥공단 온라인 신청 + 사업계획서 심사',
+ docs:['사업계획서','사업자등록증(예비창업자는 지원 전 등록)','추정 재무제표'],url:'https://www.kosmes.or.kr',contact:'중진공 1811-3655',verify:'secondary',
+ rules:[{t:'age',min:19,max:39},{t:'job',in:['prestart','self']}]},
+
+/* ---------- 강원특별자치도 · 강릉시 ---------- */
+{id:'gn-livelihood',name:'강릉시 민생안정지원금',org:'강릉시',cats:['local','lowinc'],region:'강원',city:'강릉시',type:'지역화폐',
+ target:'2026.9.30 기준 강릉시 거주 시민·영주권자·결혼이민자 (소득·재산·연령 무관)',content:'강릉페이로 1인당 10만원 충전. 연 매출 30억원 이하 강릉페이 가맹점에서 2027.2.28까지 사용',
+ amount:'1인당 10만원 (강릉페이)',income:'소득·재산 기준 없음',
+ period:{start:'2026-11-09',end:'2026-12-31'},how:'2007.12.31 이전 출생 성인은 개인별 신청, 미성년자는 세대주가 신청(세부 방법은 강릉시 공고)',
+ docs:['신분증','강릉페이 앱/카드'],url:'https://www.gn.go.kr',contact:'강릉시청 033-640-5114',verify:'secondary',
+ rules:[{t:'city',city:'강릉시'}]},
+
+{id:'gw-youth-startup-loan',name:'강원 청년창업자금 무이자 대출',org:'강원특별자치도 · 강원신용보증재단',cats:['local','startup','youth'],region:'강원',type:'융자',
+ target:'도내 청년 창업자(연령·업력 기준 공고 확인)',content:'창업자금 대출 이자를 5년간 도가 전액 지원. 2026년 규모 150억원(전년 대비 50% 확대)',
+ amount:'1인 최대 1억원 · 5년간 이자 전액 지원',income:'보증 심사 별도',
+ period:{type:'notice',note:'2026.3.16 접수 시작 · 예산 소진 여부를 강원신용보증재단에 확인'},how:'강원신용보증재단 보증 상담 후 협약은행 대출',
+ docs:['사업자등록증','신분증','공고 지정 서류'],url:'https://www.gwsinbo.or.kr',contact:'강원신용보증재단 1644-8001',verify:'secondary',
+ rules:[{t:'region',region:'강원'},{t:'age',min:19,max:39},{t:'job',in:['prestart','self']},{t:'soft',label:'청년 연령 상한·업력 기준 공고 확인'}]},
+
+{id:'gw-didimdol',name:'강원 청년 디딤돌 2배 적금 (2026년)',org:'강원특별자치도',cats:['local','youth','job'],region:'강원',type:'현금',
+ target:'도내 거주·도내 기업 근로 청년',content:'근로 청년이 저축하면 도가 저축장려금을 더해 자산 형성 지원. 2026년 신규 600명',
+ amount:null,amountNote:'적립·매칭 금액은 공고 확인',income:'소득·재산 수준 등 점수 선정',
+ period:{start:'2026-03-16',end:'2026-04-10'},how:'청년 디딤돌 2배 적금 누리집 온라인 신청',docs:['재직 증빙','주민등록 등본','공고 지정 서류'],
+ url:'https://double.gwwell.kr/youth',contact:'강원특별자치도',verify:'official',source:'강원특별자치도 공고 제2026-334호',
+ rules:[{t:'region',region:'강원'},{t:'age',min:19,max:39},{t:'job',in:['worker']}]},
+
+{id:'gw-student-loan-interest',name:'강원 청년·대학생 학자금대출 이자지원',org:'강원특별자치도',cats:['local','edu','youth'],region:'강원',type:'현금',
+ target:'만 39세 이하, 본인 또는 부모가 강원에 1년 이상 주민등록, 한국장학재단 학자금 대출자',content:'한국장학재단 학자금대출 이자 지원',
+ amount:null,amountNote:'지원 범위는 공고 확인',income:'공고 확인',
+ period:{type:'notice',note:'연도별 신청 기간 공고 확인'},how:'강원특별자치도 공고에 따라 온라인 신청',docs:['학자금 대출 내역','주민등록 초본'],
+ url:'https://state.gwd.go.kr',contact:'강원특별자치도',verify:'secondary',
+ rules:[{t:'region',region:'강원'},{t:'age',min:19,max:39},{t:'soft',label:'학자금 대출 보유·1년 이상 거주 요건 확인'}]},
+
+{id:'gw-parenting',name:'강원육아수당',org:'강원특별자치도',cats:['local','birth'],region:'강원',type:'현금',
+ target:'도내 거주 영유아 양육 가정(대상 연령 공고 확인)',content:'도 자체 육아수당. 2026년 예산 1,836억원 편성',
+ amount:null,amountNote:'월 지원액·대상 연령은 강원도 공고 확인',income:'공고 확인',
+ period:{type:'always'},how:'주소지 읍·면·동 행정복지센터',docs:['신청서','신분증','통장 사본'],
+ url:'https://state.gwd.go.kr',contact:'강원특별자치도 / 행정복지센터',verify:'secondary',
+ rules:[{t:'region',region:'강원'},{t:'child',max:5},{t:'soft',label:'대상 연령·금액 공고 확인'}]},
+
+{id:'gn-biz-loan',name:'강릉시 기업경영정책자금 이차보전',org:'강릉시',cats:['local','smb'],region:'강원',city:'강릉시',type:'융자',
+ target:'강릉시 소재 소상공인·중소기업',content:'금융기관 대출 융자 추천 + 이자 일부를 시가 3년간 보전',
+ amount:'업체당 최대 5억원 · 3년간 이자 2.5% 지원 (우대기업 3.0%)',income:'업종·신용 등 금융기관 심사',
+ period:{type:'notice',note:'2026년 하반기분 지원 확정(211곳) · 2027년 상반기 공고 확인'},how:'강릉시 공고에 따라 신청 → 융자 추천 → 협약 금융기관 대출',
+ docs:['사업자등록증','부가세 과세표준증명','공고 지정 서류'],url:'https://www.gn.go.kr',contact:'강릉시청 033-640-5114',verify:'secondary',
+ rules:[{t:'city',city:'강릉시'},{t:'job',in:['self']}]},
+
+{id:'gn-export-web',name:'강릉시 수출기업 홍보 웹사이트 입점',org:'강원특별자치도 · 강릉시',cats:['local','smb'],region:'강원',city:'강릉시',type:'서비스',
+ target:'강릉시에 본사 또는 공장이 있는 중소 제조 수출(준비) 기업',content:'수출기업 홍보 웹사이트 입점 지원',
+ amount:null,amountNote:'비금전 지원',income:'해당 없음',
+ period:{start:'2026-04-17',end:'2026-12-31'},how:'강릉시 공고에 따라 신청',docs:['공고 지정 서류'],
+ url:'https://www.gn.go.kr',contact:'강릉시청 033-640-5114',verify:'secondary',
+ rules:[{t:'city',city:'강릉시'},{t:'job',in:['self']},{t:'soft',label:'제조·수출(준비) 기업 여부 확인'}]},
+
+{id:'gw-ocean-startup',name:'강원해양수산창업투자지원사업 (2026 4차)',org:'강릉과학산업진흥원',cats:['local','fish','startup'],region:'강원',type:'사업화자금',
+ target:'도내 해양수산 연관산업(수산물 생산·가공·유통, 해양레저관광 등) 예비창업자·유망기업',content:'창업지원, 제품개발, 기술·마케팅 지원',
+ amount:null,amountNote:'공고 확인',income:'해당 없음',
+ period:{start:'2026-09-02',end:'2026-09-09'},how:'강릉과학산업진흥원 접수',docs:['사업계획서','공고 지정 서류'],
+ url:'https://www.gsipa.or.kr',contact:'강릉과학산업진흥원',verify:'official',source:'강릉과학산업진흥원 공고 제2026-96호',
+ rules:[{t:'region',region:'강원'},{t:'job',in:['prestart','self','fisher','fishhope']}]},
+];
+
+const CITIES = {
+  '강원': ['춘천시','원주시','강릉시','동해시','태백시','속초시','삼척시','홍천군','횡성군','영월군','평창군','정선군','철원군','화천군','양구군','인제군','고성군','양양군'],
+};
+
+
+// 상태 계산·자격 비교 로직 — 웹앱과 서버가 함께 사용 (순수 함수)
+
+
+const toDate = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+const fmtDate = s => { const [y, m, d] = s.split('-'); return `${y}.${+m}.${+d}`; };
+const startOfDay = (d = new Date()) => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
+
+/** 신청 상태: always | open | soon | plan | notice | closed */
+function statusOf(p, today = startOfDay()) {
+  const pr = p.period || { type: 'notice' };
+  if (pr.type === 'always') return { k: 'always', label: '상시 신청', open: true };
+  if (pr.type === 'notice') return { k: 'notice', label: '공고 확인', open: false };
+  if (pr.type === 'plan') return { k: 'plan', label: '시작 예정', open: false };
+  if (pr.type === 'closed') return { k: 'closed', label: '마감', open: false };
+  const s = pr.start ? toDate(pr.start) : null, e = pr.end ? toDate(pr.end) : null;
+  if (s && today < s) return { k: 'plan', label: '시작 예정', open: false };
+  if (!e) return { k: 'open', label: '모집 중', open: true };
+  if (today > e) return { k: 'closed', label: '마감', open: false };
+  const left = Math.round((e - today) / 86400000);
+  if (left <= 14) return { k: 'soon', label: left === 0 ? '오늘 마감' : `D-${left}`, open: true, left };
+  return { k: 'open', label: '모집 중', open: true, left };
+}
+
+function periodText(p) {
+  const pr = p.period || {};
+  if (pr.type === 'always') return '상시 (연중 신청)';
+  if (pr.note) return pr.note;
+  if (pr.raw) return pr.raw;
+  if (pr.start && pr.end) return `${fmtDate(pr.start)} ~ ${fmtDate(pr.end)}`;
+  if (pr.end) return `~ ${fmtDate(pr.end)}`;
+  return '공고 확인';
+}
+
+const CHILD_BUCKET = { '0': [0, 0], '1': [1, 1], '2': [2, 5], '6': [6, 8], '9': [9, 17], '18': [18, 99] };
+const jobName = j => (JOBS.find(x => x.id === j) || {}).name || j;
+
+/**
+ * 자격 비교. 불명확하면 절대 'high'로 판단하지 않는다.
+ * @returns {{m:'high'|'check'|'no', why:string[]}}
+ */
+function evaluate(p, prof = {}) {
+  const unknown = [], fails = [], soft = [];
+  const region = p.region || 'all';
+  if (region !== 'all') {
+    if (!prof.region) unknown.push('거주 지역 미입력');
+    else if (prof.region !== region) fails.push(`${region} 거주자 대상`);
+  }
+  for (const r of p.rules || []) {
+    if (r.t === 'age') {
+      if (prof.age === '' || prof.age == null) unknown.push('나이 미입력');
+      else if (+prof.age < r.min || +prof.age > r.max) fails.push(`연령 ${r.min}~${r.max}세 대상`);
+    } else if (r.t === 'child') {
+      if (!prof.child) unknown.push('자녀 정보 미입력');
+      else if (prof.child === 'none') fails.push('대상 자녀 없음');
+      else {
+        const [lo, hi] = CHILD_BUCKET[prof.child] || [0, 99];
+        if (lo > r.max) fails.push(`만 ${r.max}세 이하 자녀 대상`);
+        else if (hi > r.max) unknown.push('자녀 나이 구간 경계 — 정확한 나이 확인');
+      }
+    } else if (r.t === 'income') {
+      if (!prof.income) unknown.push('소득 구간 미입력');
+      else if (!r.in.includes(prof.income)) fails.push('소득 기준 미해당');
+    } else if (r.t === 'job') {
+      if (!prof.jobs || !prof.jobs.length) unknown.push('하는 일 미입력');
+      else if (!r.in.some(j => prof.jobs.includes(j))) fails.push(r.in.map(jobName).join('·') + ' 대상');
+    } else if (r.t === 'house') {
+      if (!prof.house) unknown.push('주거 형태 미입력');
+      else if (!r.in.includes(prof.house)) fails.push('무주택 월세 거주자 대상');
+    } else if (r.t === 'region') {
+      // 지역 조건은 위에서 p.region으로 처리
+    } else if (r.t === 'city') {
+      if (prof.region && prof.region !== region) { /* 지역 불일치는 위에서 처리 */ }
+      else if (!prof.city) unknown.push('시·군 미입력');
+      else if (prof.city !== r.city) fails.push(`${r.city} 거주자 대상`);
+    } else if (r.t === 'soft') {
+      soft.push(r.label);
+    }
+  }
+  if (fails.length) return { m: 'no', why: [...new Set(fails)] };
+  if (unknown.length || soft.length) return { m: 'check', why: [...new Set([...unknown, ...soft])] };
+  return { m: 'high', why: ['입력한 조건이 기본 자격과 일치'] };
+}
+
+let SERVER = false;
+
+/* ---------- 유틸 ---------- */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+const today = startOfDay();
+const catName = id => (CATS.find(c => c.id === id) || {}).name || id;
+const st = p => statusOf(p, today);
+const ORDER = {soon:0, open:1, always:2, plan:3, notice:4, closed:5};
+const byStatus = (a, b) => ORDER[st(a).k] - ORDER[st(b).k] || (st(a).left ?? 999) - (st(b).left ?? 999);
+const byId = id => P.find(p => p.id === id);
+
+/* 지원 방식 묶음 (홈 상단 분류 버튼) */
+const KINDS = [
+  {id:'cash', name:'지원금', test:p => ['현금','바우처','세금환급','지역화폐','감면','현물'].includes(p.type)},
+  {id:'loan', name:'정책자금', test:p => p.type === '융자'},
+  {id:'biz',  name:'지원사업', test:p => p.type === '사업화자금' || (p.type === '서비스' && p.cats.some(c => ['startup','smb','fish','farm','job'].includes(c)))},
+  {id:'edu',  name:'교육·장학', test:p => p.type === '장학금' || p.cats.includes('edu')},
+  {id:'life', name:'생활·복지', test:p => p.cats.some(c => ['birth','senior','lowinc','house','health','culture'].includes(c))},
+];
+const kindOf = id => KINDS.find(k => k.id === id);
+
+/* 상태 → 오른쪽 표시 */
+function rightOf(p){
+  const s = st(p);
+  if (s.k === 'soon') return ['r', s.left === 0 ? '오늘 마감' : `접수 중 · D-${s.left}`];
+  if (s.k === 'open') return ['b', s.left != null ? `접수 중 · D-${s.left}` : '접수 중'];
+  if (s.k === 'always') return ['b', '상시 접수'];
+  if (s.k === 'plan') return ['', p.period && p.period.start ? `${+p.period.start.slice(5,7)}월 예정` : '시작 예정'];
+  if (s.k === 'closed') return ['', '마감'];
+  return ['', '공고 확인'];
+}
+function row(p, i, opt = {}){
+  const [cls, txt] = rightOf(p);
+  const ev = opt.ev;
+  const place = p.region === 'all' ? '전국' : (p.city || p.region);
+  return `<div class="row" data-id="${esc(p.id)}">
+    <span class="num ${opt.fill ? 'fill' : ''}">${i + 1}</span>
+    <div class="mid">
+      ${opt.meta ? `<div class="meta">${esc(opt.meta)}</div>` : ''}
+      <h3>${esc(p.name)}</h3>
+      <div class="org">${p.org.includes(place) ? esc(p.org) : esc(place) + ' · ' + esc(p.org)}</div>
+      ${ev && ev.m === 'check' ? `<div class="tagline"><span class="tg chk">조건 확인 · ${esc(ev.why[0])}</span></div>` : ''}
+      ${ev && ev.m === 'high' ? `<div class="tagline"><span class="tg ok">✓ 내게 해당</span></div>` : ''}
+    </div>
+    <div class="right ${cls}">${esc(txt)}</div>
+  </div>`;
+}
+const rowsHtml = (arr, opt = {}) => arr.map((x, i) => {
+  const p = x.p || x, ev = x.ev;
+  return row(p, i, {...opt, ev: opt.noEv ? null : ev, fill: opt.fillHigh ? ev && ev.m === 'high' : (opt.fillFirst && i === 0), meta: opt.metaFn ? opt.metaFn(p) : opt.meta});
+}).join('');
+
+/* ---------- 사용자 저장 데이터 ---------- */
+const getProfile = () => store.get('hx_profile', {});
+const getFavs = () => store.get('hx_favs', []);
+const getTodo = () => store.get('hx_todo', {});   // {programId: {stage:0|1|2, added:'YYYY-MM-DD'}}
+const getReady = () => store.get('hx_ready', {}); // {서류이름: true}
+const hasProfile = pr => !!(pr && (pr.region || pr.age || pr.child || pr.income || (pr.jobs && pr.jobs.length) || pr.house));
+function mineOf(prof){
+  return P.filter(p => st(p).k !== 'closed').map(p => ({p, ev: evaluate(p, prof)})).filter(x => x.ev.m !== 'no')
+    .sort((a, b) => (a.ev.m === 'high' ? 0 : 1) - (b.ev.m === 'high' ? 0 : 1) || byStatus(a.p, b.p));
+}
+let FIRST_LOAD = '';  // 첫 수집일에 한꺼번에 들어온 사업은 '신규'로 보지 않음
+const isNew = p => p.firstSeen && p.firstSeen > FIRST_LOAD && (today - toDate(p.firstSeen)) / 86400000 <= 3;
+
+const INCOME_OPTS = [['recipient','기초생활수급자'],['nearpoor','차상위계층'],['mid','중위소득 100% 이하'],['high','중위소득 100% 초과']];
+const CHILD_OPTS = [['none','자녀 없음'],['0','0세'],['1','1세'],['2','2~5세'],['6','6~8세'],['9','9~17세'],['18','18세 이상']];
+const HOUSE_OPTS = [['rent','무주택·월세'],['jeonse','무주택·전세'],['own','자가'],['family','부모님 집']];
+const labelOf = (list, v) => (list.find(x => x[0] === v) || [])[1];
+function condText(pr){
+  const a = [];
+  if (pr.region) a.push(pr.region + (pr.city ? ' ' + pr.city : ''));
+  if (pr.age) a.push('만 ' + pr.age + '세');
+  if (pr.child) a.push(pr.child === 'none' ? '자녀 없음' : '막내 ' + labelOf(CHILD_OPTS, pr.child));
+  if (pr.jobs && pr.jobs.length) a.push(pr.jobs.map(j => (JOBS.find(x => x.id === j) || {}).name).filter(Boolean).join('·'));
+  if (pr.income) a.push(labelOf(INCOME_OPTS, pr.income));
+  if (pr.house) a.push(labelOf(HOUSE_OPTS, pr.house));
+  return a.join(' · ');
+}
+
+/* ---------- 알림 계산 (기기 안에서) ---------- */
+function localAlerts(){
+  const out = [], watch = new Set([...getFavs(), ...Object.keys(getTodo())]);
+  for (const id of watch){
+    const p = byId(id); if (!p) continue;
+    const s = st(p);
+    if (s.k === 'soon' && s.left <= 7) out.push({p, key: id + ':d' + s.left, meta: s.left === 0 ? '오늘 마감' : `마감 ${s.left}일 전`, pri: 0});
+    if (s.k === 'closed' && getTodo()[id] && getTodo()[id].stage === 0) out.push({p, key: id + ':closed', meta: '신청 준비 중인 사업이 마감됐어요', pri: 1});
+  }
+  const prof = getProfile();
+  if (hasProfile(prof)) for (const x of mineOf(prof)) if (isNew(x.p)) out.push({p: x.p, key: x.p.id + ':new', meta: `신규 공고 · ${+x.p.firstSeen.slice(5,7)}월 ${+x.p.firstSeen.slice(8,10)}일`, pri: 2});
+  return out.sort((a, b) => a.pri - b.pri || byStatus(a.p, b.p));
+}
+function updateBadges(){
+  const seen = new Set(store.get('hx_seen', []));
+  const n = localAlerts().filter(a => !seen.has(a.key)).length;
+  $('#bellDot').hidden = !n; $('#bellDot').textContent = n > 9 ? '9+' : n;
+  const urgent = Object.keys(getTodo()).filter(id => { const p = byId(id); return p && st(p).k === 'soon' && getTodo()[id].stage === 0; }).length;
+  $('#todoDot').hidden = !urgent; $('#todoDot').textContent = urgent;
+}
+
+/* ---------- 홈 ---------- */
+let kind = '';
+function renderHome(){
+  $('#pills').innerHTML = KINDS.map(k => `<button data-kind="${k.id}" class="${kind === k.id ? 'on' : ''}">${k.name}</button>`).join('') +
+    `<button data-go="search">전체 검색</button>`;
+  const prof = getProfile(), has = hasProfile(prof);
+  const pass = p => !kind || kindOf(kind).test(p);
+  const label = kind ? kindOf(kind).name : '혜택';
+  if (has){
+    const mine = mineOf(prof).filter(x => pass(x.p));
+    const open = mine.filter(x => st(x.p).open);
+    $('#homeTop').innerHTML = `<div class="box">
+      <div class="inner">${open.length ? rowsHtml(open.slice(0, 3), {fillFirst: true, noEv: true}) : '<div class="empty" style="padding:22px">지금 접수 중인 사업이 없어요</div>'}</div>
+      <p class="lead center">${esc(prof.city || prof.region || '내')} 조건에 맞는 ${label}<br><span style="color:var(--blue)">${mine.length}건</span>을 찾았어요</p>
+      <p class="lead-sub center">지금 접수 중 ${open.length}건 · 확실히 해당 ${mine.filter(x => x.ev.m === 'high').length}건</p>
+      <a class="btn" href="#match">내 매칭 전체 보기</a></div>`;
+  } else {
+    const cnt = P.filter(p => pass(p) && st(p).open).length;
+    $('#homeTop').innerHTML = `<div class="box center">
+      <span class="ex" style="margin:0 0 6px">1분이면 끝나요</span>
+      <p class="lead" style="margin-top:8px">해당되는 것만 누르면<br>받을 수 있는 혜택만 골라 드려요</p>
+      <p class="blue-t">지금 접수 중인 ${label} ${cnt}건 중에서<br>내 조건에 맞는 것만 보여 드려요</p>
+      <a class="btn" href="#setup">내 혜택 찾기</a>
+      <p class="desc" style="margin-top:10px;font-size:13px">무료 · 회원가입 없음 · 이 기기에만 저장</p></div>`;
+  }
+  // 아래 목록: 신규 공고 → 없으면 마감 임박 → 없으면 접수 중
+  const base = (has ? mineOf(prof).map(x => x.p) : P).filter(pass);
+  let arr = base.filter(isNew), title = '오늘 새로 뜬 공고', meta = p => `신규 공고 · ${+p.firstSeen.slice(5,7)}월 ${+p.firstSeen.slice(8,10)}일`;
+  if (!arr.length){ arr = base.filter(p => st(p).k === 'soon'); title = '마감 임박'; meta = () => '14일 안에 마감'; }
+  if (!arr.length){ arr = base.filter(p => st(p).open); title = '지금 접수 중'; meta = null; }
+  arr = arr.slice().sort(byStatus);
+  $('#listTitle').textContent = title; $('#listCount').textContent = arr.length + '건';
+  $('#homeList').innerHTML = arr.length ? rowsHtml(arr.slice(0, 10), {metaFn: meta}) : '<div class="empty">해당하는 사업이 없어요</div>';
+  $('#homeFoot').textContent = `수록 사업 ${P.length}건. 금액·기간은 반드시 공식 공고에서 한 번 더 확인하세요.`;
+}
+
+/* ---------- 할 일 ---------- */
+const STAGES = ['신청 준비 중', '접수 완료', '결과 확인'];
+function docsOf(p){ return (p.docs || []).filter(Boolean); }
+function renderTodo(){
+  const todo = getTodo(), ids = Object.keys(todo).filter(byId);
+  const items = ids.map(id => ({p: byId(id), t: todo[id]}))
+    .sort((a, b) => a.t.stage - b.t.stage || byStatus(a.p, b.p));
+  $('#todoCount').textContent = items.length ? items.length + '건' : '';
+  const ready = getReady();
+  const cards = items.map((x, i) => {
+    const p = x.p, s = st(p), stg = x.t.stage, docs = docsOf(p), done = docs.filter(d => ready[d]).length;
+    const dd = s.k === 'soon' || s.left != null ? (s.left === 0 ? '오늘 마감' : `D-${s.left}`) : s.label;
+    return `<div class="todo">
+      <div class="hd"><span class="n">${i + 1}</span><span class="stg s${stg}">${STAGES[stg]}</span><span class="dd" style="${s.k === 'soon' && stg === 0 ? 'color:var(--red)' : ''}">${esc(dd)}</span></div>
+      <h3>${esc(p.name)}${stg === 0 ? ' 신청하기' : ''}</h3><div class="org">${esc(p.org)}</div>
+      <div class="steps">${['안내','접수','결과'].map((l, k) => `<div class="${k <= stg || stg === 2 ? 'done' : k === stg + 1 ? 'cur' : ''}"><i></i>${l}</div>`).join('')}</div>
+      ${docs.length && stg === 0 ? `<div class="bar"><i style="width:${Math.round(done / docs.length * 100)}%"></i></div><div class="barlab">챙긴 서류 ${done} / ${docs.length}</div>` : ''}
+      <div class="acts">
+        <button data-del="${esc(p.id)}">목록에서 빼기</button>
+        <span style="display:flex;gap:16px">
+          <button data-open="${esc(p.id)}">신청 방법 ›</button>
+          ${stg < 2 ? `<button class="go" data-next="${esc(p.id)}">${stg === 0 ? '접수했어요' : '결과 받았어요'}</button>` : ''}
+        </span>
+      </div></div>`;
+  }).join('');
+  $('#todoList').innerHTML = (cards || `<div class="todo" style="opacity:.55">
+      <div class="hd"><span class="n">1</span><span class="stg">신청 준비 중</span><span class="dd">D-12</span><span class="ex" style="margin:0 0 0 auto">예시</span></div>
+      <h3>관심 사업 신청하기</h3><div class="org">담당 기관</div>
+      <div class="steps"><div class="done"><i></i>안내</div><div class="cur"><i></i>접수</div><div><i></i>결과</div></div></div>`) +
+    `<div class="dark"><h3>${items.length ? '신청할 사업과 챙길 서류,<br>진행 단계를 여기서 챙겨요' : '사업 상세에서 ‘신청 준비하기’를 누르면<br>여기서 끝까지 챙겨 드려요'}</h3>
+      <ul><li><div><b>신청 준비 관리</b><span>필요한 서류를 할 일로 챙겨요</span></div></li>
+      <li><div><b>마감 알림</b><span>마감 7일·3일·1일 전과 당일에 알려요</span></div></li>
+      <li><div><b>진행 단계 기록</b><span>안내 → 접수 → 결과를 한눈에 봐요</span></div></li></ul>
+      <a class="btn gold" href="#match">내게 맞는 사업 보기</a></div>`;
+}
+
+/* ---------- 알림 ---------- */
+function renderAlert(){
+  const list = localAlerts();
+  $('#alertCount').textContent = list.length ? list.length + '건' : '';
+  $('#alertList').innerHTML = list.length ? list.map((a, i) => row(a.p, i, {meta: a.meta, fill: a.pri === 0})).join('')
+    : `<div class="empty">아직 알림이 없어요.<br>관심 사업이나 할 일에 담은 사업의 마감이 다가오면<br>여기에 알려 드려요.</div>`;
+  store.set('hx_seen', [...new Set([...store.get('hx_seen', []), ...list.map(a => a.key)])].slice(-500));
+  updateBadges();
+  renderServerNoti();
+}
+async function renderServerNoti(){
+  const box = $('#serverNoti'); box.innerHTML = '';
+  if (!SERVER) return;
+  try {
+    const j = await (await fetch('api/notifications?deviceId=' + encodeURIComponent(deviceId()))).json();
+    if (j.items && j.items.length) box.innerHTML = `<div class="sub-title">지난 알림</div><div class="rows" style="margin-top:12px">` +
+      j.items.map(n => `<div class="row" data-id="${esc(n.program_id)}"><div class="mid"><div class="meta">${esc(n.created_at.slice(0,10))}</div><h3 style="font-size:15.5px">${esc(n.message)}</h3></div><span class="chev">›</span></div>`).join('') + '</div>';
+  } catch(e) {}
+}
+
+/* ---------- 매칭 ---------- */
+let mSeg = 'all', mCat = '', sureOnly = false, mShown = 30;
+function renderMatch(){
+  const prof = getProfile();
+  if (!hasProfile(prof)){
+    $('#matchBody').innerHTML = `<div class="box"><div class="inner">
+        <div class="row"><span class="num fill">1</span><div class="mid"><h3>강릉시 민생안정지원금</h3><div class="org">강릉시</div></div><div class="right b">접수 중</div></div>
+        <div class="row"><span class="num">2</span><div class="mid"><h3>청년 월세 지원</h3><div class="org">국토교통부</div></div><div class="right">공고 확인</div></div>
+        <div class="row"><span class="num">3</span><div class="mid"><h3>귀어 창업자금</h3><div class="org">해양수산부</div></div><div class="right b">상시 접수</div></div>
+      </div><span class="ex" style="margin:12px 0 0">예시</span>
+      <p class="lead center">내 조건에 맞는 사업만<br>여기에 골라 드려요</p>
+      <p class="lead-sub center">지역·나이·하는 일만 누르면 끝이에요.</p>
+      <a class="btn" href="#setup">조건 선택하기</a></div>`;
+    return;
+  }
+  const all = mineOf(prof), hi = all.filter(x => x.ev.m === 'high').length;
+  const base = sureOnly ? all.filter(x => x.ev.m === 'high') : all;
+  const cnt = {all: base.length, open: base.filter(x => st(x.p).open).length, soon: base.filter(x => st(x.p).k === 'soon').length};
+  const bySeg = base.filter(x => mSeg === 'all' || (mSeg === 'open' ? st(x.p).open : st(x.p).k === 'soon'));
+  const catCnt = {}; bySeg.forEach(x => x.p.cats.forEach(c => catCnt[c] = (catCnt[c] || 0) + 1));
+  if (mCat && !catCnt[mCat]) mCat = '';
+  const rows = bySeg.filter(x => !mCat || x.p.cats.includes(mCat));
+  $('#matchBody').innerHTML = `
+    <div class="hero"><div class="k">내가 받을 수 있는 혜택</div>
+      <div class="big">${all.length}<small>건</small></div>
+      <div class="s">✓ 확실히 해당 ${hi}건 · 조건 확인 필요 ${all.length - hi}건</div>
+      <div class="cond"><span>${esc(condText(prof))}</span><button data-go="setup">수정</button></div></div>
+    <div class="tabs">${[['all','전체'],['open','지금 신청'],['soon','마감 임박']].map(([k, l]) => `<button data-seg="${k}" class="${mSeg === k ? 'on' : ''}">${l} ${cnt[k]}</button>`).join('')}</div>
+    <div class="chipx"><button data-mcat="" class="${mCat ? '' : 'on'}">모든 분야</button>${CATS.filter(c => catCnt[c.id]).map(c => `<button data-mcat="${c.id}" class="${mCat === c.id ? 'on' : ''}">${c.icon} ${c.name} ${catCnt[c.id]}</button>`).join('')}</div>
+    <label class="sw"><input type="checkbox" id="sureOnly" ${sureOnly ? 'checked' : ''}> 확실히 맞는 사업만 보기</label>
+    <div class="rows" style="margin-top:8px">${rows.length ? rowsHtml(rows.slice(0, mShown), {fillHigh: true}) : `<div class="empty">${sureOnly ? '확실히 맞는 사업이 아직 없어요.<br>체크를 끄면 확인이 필요한 사업도 보여요.' : '해당하는 사업이 없어요.'}</div>`}</div>
+    ${rows.length > mShown ? `<button class="more" id="moreBtn">더 보기 (${rows.length - mShown}건 남음)</button>` : ''}`;
+}
+
+/* ---------- 내 서류 ---------- */
+const ISSUE = [
+  ['주민등록', '정부24', 'https://www.gov.kr'],
+  ['가족관계', '대법원 전자가족관계등록시스템', 'https://efamily.scourt.go.kr'],
+  ['소득금액|사업자등록|부가가치세|납세', '홈택스', 'https://www.hometax.go.kr'],
+  ['건강보험|보험료', '국민건강보험공단', 'https://www.nhis.or.kr'],
+  ['어업인|어선|어업경영체', '수협·해양수산부 (어업인 확인서는 읍·면·동)', 'https://www.mof.go.kr'],
+];
+const issueOf = d => ISSUE.find(([re]) => new RegExp(re).test(d));
+function renderDocs(){
+  const todo = getTodo(), ready = getReady();
+  const ids = Object.keys(todo).filter(id => byId(id) && todo[id].stage === 0);
+  const map = new Map();
+  ids.forEach(id => docsOf(byId(id)).forEach(d => { if (!map.has(d)) map.set(d, []); map.get(d).push(byId(id).name); }));
+  const docs = [...map.entries()].sort((a, b) => (ready[a[0]] ? 1 : 0) - (ready[b[0]] ? 1 : 0) || b[1].length - a[1].length);
+  const done = docs.filter(([d]) => ready[d]).length;
+  $('#docCount').textContent = docs.length ? `${done} / ${docs.length}` : '0건';
+  const docHtml = docs.map(([d, names]) => { const iss = issueOf(d);
+    return `<div class="doc ${ready[d] ? 'on' : ''}" data-doc="${esc(d)}"><span class="ck">${ready[d] ? '✓' : ''}</span><div><b>${esc(d)}</b>
+      <span>${esc(names.length > 1 ? `${names[0]} 외 ${names.length - 1}건에 필요` : names[0])}${iss ? ` · 발급: ${esc(iss[1])}` : ''}</span></div></div>`; }).join('');
+  $('#docBody').innerHTML = `
+    <div class="sub-title" style="margin-top:4px">챙길 서류 <span style="color:var(--blue);margin-left:6px">${docs.length - done}</span></div>
+    <p class="desc">${docs.length ? '‘할 일’에 담은 사업의 제출 서류를 한데 모았어요. 준비한 서류를 눌러 체크하세요. 여러 사업에 같은 서류가 필요하면 한 번만 챙기면 돼요.' : '사업 상세에서 ‘신청 준비하기’를 누르면 필요한 서류가 여기 모여요.'}</p>
+    <div style="margin-top:8px">${docHtml}</div>
+    <div class="sub-title">바로가기</div>
+    <div class="menu">
+      <a class="mi" href="#match"><span class="ic">◎</span><div style="flex:1"><b>지원사업 매칭</b><span>내 조건에 맞게 골라 드리는 사업</span></div><span class="chev">›</span></a>
+      <a class="mi" href="#todo"><span class="ic">☑</span><div style="flex:1"><b>신청 진행 현황</b><span>안내 → 접수 → 결과</span></div><span class="chev">›</span></a>
+      <a class="mi" href="https://www.gov.kr" target="_blank" rel="noopener"><span class="ic">📄</span><div style="flex:1"><b>정부24 서류 발급</b><span>주민등록등본·초본 등</span></div><span class="chev">↗</span></a>
+      <a class="mi" href="https://www.hometax.go.kr" target="_blank" rel="noopener"><span class="ic">🧾</span><div style="flex:1"><b>홈택스 증명 발급</b><span>소득금액증명·사업자등록증명</span></div><span class="chev">↗</span></a>
+      <a class="mi" href="https://www.nhis.or.kr" target="_blank" rel="noopener"><span class="ic">🏥</span><div style="flex:1"><b>건강보험 서류 발급</b><span>자격득실확인서·납부확인서</span></div><span class="chev">↗</span></a>
+    </div>`;
+}
+
+/* ---------- 검색 ---------- */
+function renderSearch(){
+  const q = $('#q').value.trim().toLowerCase(), c = $('#fCat').value, s = $('#fStatus').value, r = $('#fRegion').value, k = $('#fKind').value;
+  const arr = P.filter(p => {
+    if (q && !(p.name + p.org + p.target + p.content).toLowerCase().includes(q)) return false;
+    if (c && !p.cats.includes(c)) return false;
+    if (k && !kindOf(k).test(p)) return false;
+    if (r && !(p.region === 'all' || p.region === r)) return false;
+    const x = st(p).k;
+    if (s === 'open' && !st(p).open) return false;
+    if (s && s !== 'open' && x !== s) return false;
+    return true;
+  }).sort(byStatus);
+  $('#searchCount').textContent = arr.length + '건';
+  $('#searchList').innerHTML = arr.length ? rowsHtml(arr.slice(0, 100)) : '<div class="empty">조건에 맞는 사업이 없어요. 필터를 줄여 보세요.</div>';
+}
+
+/* ---------- 조건 선택 ---------- */
+let draft = {};
+const optsHtml = (key, list, multi) => list.map(([v, l]) =>
+  `<button type="button" class="opt ${multi ? ((draft[key] || []).includes(v) ? 'on' : '') : (draft[key] === v ? 'on' : '')}" data-k="${key}" data-v="${esc(v)}">${esc(l)}</button>`).join('');
+function renderCityOpts(){
+  const cities = CITIES[draft.region] || [];
+  $('#qCityWrap').hidden = !cities.length;
+  $('#qCity').innerHTML = optsHtml('city', cities.map(c => [c, c]));
+}
+function updateSetupCount(){
+  const has = hasProfile(draft), m = has ? mineOf(draft) : [], hi = m.filter(x => x.ev.m === 'high').length;
+  $('#setupDone').disabled = !has;
+  $('#setupDone').textContent = has ? `내 혜택 ${m.length}건 보기` : '해당되는 항목을 눌러 주세요';
+  $('#setupCnt').textContent = has ? `✓ 확실히 해당 ${hi}건 · 조건 확인 필요 ${m.length - hi}건` : '';
+}
+function renderSetup(){
+  $('#qRegion').innerHTML = optsHtml('region', REGIONS.map(r => [r, r]));
+  renderCityOpts();
+  $('#qAge').value = draft.age ?? '';
+  $('#qChild').innerHTML = optsHtml('child', CHILD_OPTS);
+  $('#qJobs').innerHTML = optsHtml('jobs', JOBS.map(j => [j.id, j.name]), true);
+  $('#qIncome').innerHTML = optsHtml('income', INCOME_OPTS);
+  $('#qHouse').innerHTML = optsHtml('house', HOUSE_OPTS);
+  updateSetupCount();
+}
+
+/* ---------- 내 정보 ---------- */
+function renderMe(){
+  const prof = getProfile();
+  $('#meCond').textContent = hasProfile(prof) ? condText(prof) : '아직 고른 조건이 없어요';
+  $('#clearProfile').hidden = !hasProfile(prof);
+  $('#pEmail').value = store.get('hx_email', '');
+  const favs = getFavs();
+  $('#favCount').textContent = favs.length + '건';
+  const arr = P.filter(p => favs.includes(p.id)).sort(byStatus);
+  $('#favList').innerHTML = arr.length ? rowsHtml(arr) : '<div class="empty">사업 상세에서 ☆ 관심 등록하면 여기에 모여요.</div>';
+}
+
+/* ---------- 상세 ---------- */
+function openDetail(id){
+  const p = byId(id); if (!p) return;
+  const s = st(p), prof = getProfile(), ev = hasProfile(prof) ? evaluate(p, prof) : null;
+  const fav = getFavs().includes(id), inTodo = !!getTodo()[id], ready = getReady();
+  const vlab = p.verify === 'official' ? ['ok','공식 출처 확인'] : p.verify === 'gov24' ? ['b','정부24 공공서비스'] : ['chk','공식 원문 재확인 필요'];
+  $('#sheet').innerHTML = `<div class="grab"></div><button class="x" id="closeSheet" aria-label="닫기">✕</button>
+    <div class="tagline"><span class="tg ${rightOf(p)[0] === 'b' || rightOf(p)[0] === 'r' ? 'b' : ''}">${esc(rightOf(p)[1])}</span>
+      ${ev ? `<span class="tg ${ev.m === 'high' ? 'ok' : ev.m === 'check' ? 'chk' : ''}">${ev.m === 'high' ? '✓ 내게 해당' : ev.m === 'check' ? '조건 확인' : '해당 없음'}</span>` : ''}
+      <span class="tg ${vlab[0]}">${vlab[1]}</span></div>
+    <h2>${esc(p.name)}</h2><div class="org">${esc(p.org)}</div>
+    ${ev && ev.m !== 'high' ? `<div class="warn"><b>${ev.m === 'no' ? '해당 없음 사유' : '신청 전 확인할 것'}</b>${esc(ev.why.join(' / '))}</div>` : ''}
+    <dl class="sum">
+      <div><dt>지원 금액</dt><dd>${p.amount ? esc(p.amount) : `<span style="color:var(--gold-ink)">${esc(p.amountNote || '공고 확인')}</span>`}</dd></div>
+      <div><dt>신청 기간</dt><dd>${esc(periodText(p))}</dd></div>
+      <div><dt>지원 방식</dt><dd>${esc(p.type)}</dd></div>
+      <div><dt>지역</dt><dd>${p.region === 'all' ? '전국' : esc(p.region + (p.city ? ' ' + p.city : ''))}</dd></div>
+    </dl>
+    <dl class="kv">
+      <dt>지원 대상</dt><dd>${esc(p.target)}</dd>
+      <dt>지원 내용</dt><dd>${esc(p.content)}</dd>
+      <dt>소득·재산 기준</dt><dd>${esc(p.income)}</dd>
+      <dt>신청 방법</dt><dd>${esc(p.how)}</dd>
+      <dt>제출 서류</dt><dd>${docsOf(p).length ? docsOf(p).map(d => `<div class="doc ${ready[d] ? 'on' : ''}" data-doc="${esc(d)}" style="padding:10px 0"><span class="ck">${ready[d] ? '✓' : ''}</span><div><b style="font-size:15px">${esc(d)}</b></div></div>`).join('') : '공고문 확인'}</dd>
+      <dt>문의</dt><dd>${esc(p.contact)}</dd>
+      <dt>정보 확인</dt><dd style="font-size:13.5px;color:var(--sub)">${esc(p.lastChecked || LAST_CHECKED)}${p.source ? ' · ' + esc(p.source) : ''}</dd>
+    </dl>
+    <div style="margin-top:24px">
+      ${s.k === 'closed' ? '' : `<button class="btn ${inTodo ? 'line' : 'blue'}" id="todoBtn">${inTodo ? '✓ 할 일에 담겨 있어요' : '신청 준비하기'}</button>`}
+      <a class="btn line" href="${esc(p.url)}" target="_blank" rel="noopener">공식 공고 보기 ↗</a>
+      <button class="btn line" id="favBtn">${fav ? '★ 관심 사업 해제' : '☆ 관심 사업으로 저장'}</button>
+    </div>`;
+  $('#sheet').classList.add('on'); $('#sheetBg').classList.add('on'); $('#sheet').scrollTop = 0;
+  $('#closeSheet').onclick = closeDetail;
+  $('#favBtn').onclick = () => {
+    let f = getFavs(); f = f.includes(id) ? f.filter(x => x !== id) : [...f, id];
+    store.set('hx_favs', f); syncSubscription(id, f.includes(id)); openDetail(id); refresh();
+  };
+  const tb = $('#todoBtn');
+  if (tb) tb.onclick = () => {
+    const t = getTodo();
+    if (t[id]) { location.hash = 'todo'; closeDetail(); return; }
+    t[id] = {stage: 0, added: new Date().toISOString().slice(0, 10)}; store.set('hx_todo', t);
+    syncSubscription(id, true); openDetail(id); refresh();
+  };
+}
+function closeDetail(){ $('#sheet').classList.remove('on'); $('#sheetBg').classList.remove('on'); }
+
+/* ---------- 서버 연동 ---------- */
+function deviceId(){
+  let id = store.get('hx_device', null);
+  if (!id) { id = crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2); store.set('hx_device', id); }
+  return id;
+}
+async function syncSubscription(id, on){
+  if (!SERVER) return;
+  if (!on && (getFavs().includes(id) || getTodo()[id])) return; // 다른 이유로 아직 지켜보는 중
+  try { await fetch('api/subscriptions', {method: on ? 'POST' : 'DELETE', headers:{'content-type':'application/json'},
+    body: JSON.stringify({deviceId: deviceId(), programId: id, email: store.get('hx_email', '') || undefined})}); } catch(e) {}
+}
+
+/* ---------- 라우팅 ---------- */
+const VIEWS = ['home','todo','alert','match','docs','search','setup','me'];
+const RENDER = {home:renderHome, todo:renderTodo, alert:renderAlert, match:renderMatch, docs:renderDocs, search:renderSearch, setup:renderSetup, me:renderMe};
+let cur = '';
+function route(){
+  let v = location.hash.slice(1); if (v === 'my') v = 'me'; if (!VIEWS.includes(v)) v = 'home';
+  if (v !== cur){ if (v === 'setup') draft = JSON.parse(JSON.stringify(getProfile())); window.scrollTo && window.scrollTo(0, 0); cur = v; }
+  VIEWS.forEach(x => $('#v-' + x).classList.toggle('on', x === v));
+  document.body.classList.toggle('setup', v === 'setup');
+  $$('nav a').forEach(a => a.classList.toggle('on', a.dataset.v === v));
+  RENDER[v](); updateBadges();
+}
+const refresh = () => { RENDER[cur] && RENDER[cur](); updateBadges(); };
+
+/* ---------- 이벤트 ---------- */
+document.addEventListener('click', e => {
+  const t = e.target;
+  const r = t.closest('.row[data-id]'); if (r && !t.closest('a')) return openDetail(r.dataset.id);
+  const go = t.closest('[data-go]'); if (go){ location.hash = go.dataset.go; return; }
+  const k = t.closest('[data-kind]'); if (k){ kind = kind === k.dataset.kind ? '' : k.dataset.kind; return renderHome(); }
+  const sg = t.closest('[data-seg]'); if (sg){ mSeg = sg.dataset.seg; mShown = 30; return renderMatch(); }
+  const mc = t.closest('[data-mcat]'); if (mc){ mCat = mc.dataset.mcat; mShown = 30; return renderMatch(); }
+  if (t.closest('#moreBtn')){ mShown += 30; return renderMatch(); }
+  const d = t.closest('[data-doc]');
+  if (d){ const rd = getReady(); rd[d.dataset.doc] ? delete rd[d.dataset.doc] : rd[d.dataset.doc] = true; store.set('hx_ready', rd);
+    const on = !!rd[d.dataset.doc]; $$('[data-doc]').filter(x => x.dataset.doc === d.dataset.doc).forEach(x => { x.classList.toggle('on', on); x.querySelector('.ck').textContent = on ? '✓' : ''; });
+    if (cur === 'docs' && !t.closest('.sheet')) renderDocs(); else if (cur === 'todo') renderTodo(); return; }
+  const op = t.closest('[data-open]'); if (op) return openDetail(op.dataset.open);
+  const nx = t.closest('[data-next]'); if (nx){ const td = getTodo(); td[nx.dataset.next].stage++; store.set('hx_todo', td); return refresh(); }
+  const dl = t.closest('[data-del]');
+  if (dl){ if (dl.dataset.armed){ const td = getTodo(); delete td[dl.dataset.del]; store.set('hx_todo', td); syncSubscription(dl.dataset.del, false); return refresh(); }
+    dl.dataset.armed = 1; dl.textContent = '한 번 더 누르면 빠져요'; dl.style.color = 'var(--red)'; return; }
+  const o = t.closest('.opt');
+  if (o){
+    const key = o.dataset.k, v = o.dataset.v;
+    if (key === 'jobs'){ const a = new Set(draft.jobs || []); a.has(v) ? a.delete(v) : a.add(v); draft.jobs = [...a]; o.classList.toggle('on', a.has(v)); }
+    else { const same = draft[key] === v; draft[key] = same ? '' : v;
+      o.parentElement.querySelectorAll('.opt').forEach(x => x.classList.remove('on')); if (!same) o.classList.add('on');
+      if (key === 'region'){ draft.city = ''; renderCityOpts(); } }
+    updateSetupCount();
+  }
+});
+document.addEventListener('change', e => { if (e.target.id === 'sureOnly'){ sureOnly = e.target.checked; mShown = 30; renderMatch(); } });
+$('#sheetBg').onclick = closeDetail;
+['#q','#fCat','#fStatus','#fRegion','#fKind'].forEach(s => $(s).addEventListener('input', renderSearch));
+$('#qAge').addEventListener('input', e => { draft.age = e.target.value.trim(); updateSetupCount(); });
+$('#resetDraft').addEventListener('click', () => { draft = {}; renderSetup(); });
+$('#setupDone').addEventListener('click', () => {
+  if (!hasProfile(draft)) return;
+  store.set('hx_profile', {region: draft.region || '', city: draft.city || '', age: draft.age || '', child: draft.child || '',
+    income: draft.income || '', house: draft.house || '', jobs: draft.jobs || []});
+  mSeg = 'all'; mCat = ''; sureOnly = false; mShown = 30; location.hash = 'match';
+});
+let clearArmed = false;
+$('#clearProfile').addEventListener('click', e => {
+  if (!clearArmed){ clearArmed = true; e.target.textContent = '정말 지울까요? 한 번 더 누르세요'; return; }
+  clearArmed = false; e.target.textContent = '내 조건 지우기'; store.set('hx_profile', {}); renderMe();
+});
+$('#pEmail').addEventListener('change', () => { store.set('hx_email', $('#pEmail').value.trim()); [...getFavs(), ...Object.keys(getTodo())].forEach(id => syncSubscription(id, true)); });
+window.addEventListener('hashchange', route);
+
+/* 초기화 */
+$('#lastChecked').textContent = LAST_CHECKED.replaceAll('-', '.');
+$('#fCat').innerHTML += CATS.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+$('#fRegion').innerHTML += REGIONS.map(r => `<option>${r}</option>`).join('');
+$('#fKind').innerHTML += KINDS.map(k => `<option value="${k.id}">${k.name}</option>`).join('');
+route();
+
+/* 서버 모드: /api 가 있으면 공공데이터 API로 수집된 최신 사업을 합친다. 없으면 내장 데이터만 사용 */
+(async () => {
+  if (!/^https?:$/.test(location.protocol)) return;
+  try {
+    const ctl = new AbortController(); setTimeout(() => ctl.abort(), 4000);
+    const r = await fetch('api/programs?limit=5000', {signal: ctl.signal});
+    if (!r.ok) return;
+    const j = await r.json();
+    if (!Array.isArray(j.items)) return;
+    const idx = new Map(P.map((p, i) => [p.id, i]));
+    for (const it of j.items) { if (idx.has(it.id)) P[idx.get(it.id)].lastChecked = it.lastChecked; else P.push(it); }
+    FIRST_LOAD = j.items.map(it => it.firstSeen).filter(Boolean).sort()[0] || '';
+    SERVER = true;
+    if (j.lastSync) $('#lastChecked').textContent = j.lastSync.slice(0, 10).replaceAll('-', '.') + ' (자동 수집)';
+    refresh();
+  } catch(e) { /* 오프라인·아티팩트 환경: 내장 데이터 유지 */ }
+})();
+</script>
+</body>
+</html>

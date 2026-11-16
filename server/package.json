@@ -1,0 +1,16 @@
+{
+  "name": "hyetaek-server",
+  "version": "1.0.0",
+  "description": "혜택찾기 — 대한민국 지원사업 통합 검색 서버 (공공데이터 API 수집·검색·맞춤추천·마감알림)",
+  "type": "module",
+  "engines": { "node": ">=22.5" },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning src/server.js",
+    "sync": "node --disable-warning=ExperimentalWarning src/cli.js sync",
+    "sync:full": "node --disable-warning=ExperimentalWarning src/cli.js sync full",
+    "notify": "node --disable-warning=ExperimentalWarning src/cli.js notify",
+    "build:web": "node ../scripts/build-web.mjs",
+    "test": "node --disable-warning=ExperimentalWarning --test test/*.test.mjs"
+  },
+  "optionalDependencies": { "nodemailer": "^6.9.0" }
+}

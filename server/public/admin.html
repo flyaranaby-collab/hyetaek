@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>혜택찾기 관리자</title>
+<style>
+body{font-family:system-ui,'Noto Sans KR',sans-serif;margin:0;background:#f5f6f8;color:#16202e}
+main{max-width:960px;margin:0 auto;padding:16px}
+h1{font-size:20px}h2{font-size:16px;margin-top:24px}
+.box{background:#fff;border:1px solid #e3e6eb;border-radius:12px;padding:14px;margin:10px 0}
+button{font:inherit;padding:8px 14px;border-radius:8px;border:1px solid #1d4ed8;background:#1d4ed8;color:#fff;cursor:pointer}
+button.g{background:#fff;color:#1d4ed8}
+input,select{font:inherit;padding:8px;border:1px solid #d0d5dc;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{border-bottom:1px solid #eee;padding:6px;text-align:left;vertical-align:top}
+.err{color:#b42318}.ok{color:#137a43}small{color:#5b6676}
+</style></head><body><main>
+<h1>혜택찾기 관리자</h1>
+<div class="box"><input id="tok" type="password" placeholder="ADMIN_TOKEN" size="40"> <button id="login">접속</button> <span id="msg"></span></div>
+<div id="app" hidden>
+  <div class="box" id="stats"></div>
+  <div class="box">
+    <button id="syncInc">증분 수집</button> <button id="syncFull" class="g">전체 수집(종료 판정 포함)</button>
+    <button id="notify" class="g">알림 생성·발송</button> <span id="syncMsg"></span>
+  </div>
+  <h2>수집 기록</h2><div class="box"><table id="log"></table></div>
+  <h2>사업 관리</h2>
+  <div class="box"><input id="q" placeholder="사업명 검색"> <button id="search" class="g">검색</button>
+  <table id="progs"></table></div>
+</div>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let token = sessionStorage.getItem('hx_admin') || '';
+async function api(path, opt = {}) {
+  const r = await fetch(path, { ...opt, headers: { 'content-type': 'application/json', authorization: 'Bearer ' + token } });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || r.status);
+  return j;
+}
+async function load() {
+  const s = await api('/api/admin/stats');
+  $('#stats').innerHTML = `마지막 수집: <b>${esc(s.lastSync || '없음')}</b> · 알림 구독 ${s.subscriptions}건<br>` +
+    s.sources.map(x => `${esc(x.source)}: ${x.total}건 (숨김 ${x.hidden}, 종료 ${x.removed}, 중복 통합 ${x.dups})`).join('<br>');
+  const l = await api('/api/admin/sync-log');
+  $('#log').innerHTML = '<tr><th>시작</th><th>방식</th><th>결과</th><th>수집</th><th>신규</th><th>변경</th><th>종료</th><th>오류</th></tr>' +
+    l.items.map(x => `<tr><td>${esc(x.started_at)}</td><td>${esc(x.mode)}</td><td class="${x.ok ? 'ok' : 'err'}">${x.ok == null ? '진행중' : x.ok ? '성공' : '실패'}</td><td>${x.fetched}</td><td>${x.created}</td><td>${x.updated}</td><td>${x.removed}</td><td class="err">${esc(x.error || '')}</td></tr>`).join('');
+  await search();
+}
+async function search() {
+  const j = await api('/api/admin/programs?limit=100&q=' + encodeURIComponent($('#q').value));
+  $('#progs').innerHTML = `<tr><th>사업 (${j.total}건)</th><th>상태</th><th>검증</th><th></th></tr>` + j.items.map(p => `<tr>
+    <td><b>${esc(p.name)}</b><br><small>${esc(p.org)} · ${esc(p.id)}</small></td><td>${esc(p.status.label)}</td>
+    <td><select data-v="${esc(p.id)}">${['official','gov24','secondary','unverified'].map(v => `<option ${p.verify===v?'selected':''}>${v}</option>`).join('')}</select></td>
+    <td><button class="g" data-h="${esc(p.id)}">숨김</button></td></tr>`).join('');
+}
+document.addEventListener('change', async e => { if (e.target.dataset.v) { await api('/api/admin/programs/' + e.target.dataset.v, { method: 'PATCH', body: JSON.stringify({ verify: e.target.value }) }); } });
+document.addEventListener('click', async e => { if (e.target.dataset.h) { await api('/api/admin/programs/' + e.target.dataset.h, { method: 'PATCH', body: JSON.stringify({ hidden: true }) }); search(); } });
+async function sync(mode) {
+  $('#syncMsg').textContent = '수집 중… (수 분 걸릴 수 있음)';
+  try { const r = await api('/api/admin/sync?mode=' + mode, { method: 'POST' }); $('#syncMsg').textContent = `완료: 수집 ${r.fetched}, 신규 ${r.created}, 변경 ${r.updated}, 종료 ${r.removed}`; }
+  catch (err) { $('#syncMsg').textContent = '실패: ' + err.message; }
+  load();
+}
+$('#syncInc').onclick = () => sync('incremental');
+$('#syncFull').onclick = () => sync('full');
+$('#notify').onclick = async () => { const r = await api('/api/admin/notify-run', { method: 'POST' }); $('#syncMsg').textContent = `알림 ${r.created}건 생성, 메일 ${r.sent ?? 0}건 ${r.skipped ? '(' + r.skipped + ')' : ''}`; };
+$('#search').onclick = search;
+$('#login').onclick = async () => { token = $('#tok').value.trim(); try { await load(); sessionStorage.setItem('hx_admin', token); $('#app').hidden = false; $('#msg').textContent = ''; } catch (err) { $('#msg').innerHTML = '<span class="err">' + esc(err.message) + '</span>'; } };
+if (token) $('#login').click();
+</script></main></body></html>

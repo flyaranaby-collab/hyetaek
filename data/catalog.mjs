@@ -1,0 +1,230 @@
+// 혜택찾기 큐레이션 데이터 — 웹앱과 서버가 함께 사용
+export const LAST_CHECKED = '2026-11-16';
+
+export const CATS = [
+  {id:'birth',name:'육아·출산',icon:'👶'},
+  {id:'youth',name:'청년',icon:'🧑'},
+  {id:'senior',name:'노인·고령층',icon:'🧓'},
+  {id:'lowinc',name:'저소득·취약계층',icon:'🤝'},
+  {id:'house',name:'주거',icon:'🏠'},
+  {id:'edu',name:'교육·장학금',icon:'🎓'},
+  {id:'job',name:'취업·직업훈련',icon:'💼'},
+  {id:'startup',name:'창업·사업화',icon:'🚀'},
+  {id:'smb',name:'소상공인·자영업',icon:'🏪'},
+  {id:'farm',name:'농업·귀농',icon:'🌾'},
+  {id:'fish',name:'어업·귀어',icon:'🐙'},
+  {id:'culture',name:'문화·여가',icon:'🎭'},
+  {id:'energy',name:'에너지',icon:'⚡'},
+  {id:'local',name:'우리 지역',icon:'📍'},
+  {id:'health',name:'건강·의료',icon:'🏥'},
+  {id:'etc',name:'기타 생활',icon:'📌'},
+];
+
+export const REGIONS = ['서울','부산','대구','인천','광주','대전','울산','세종','경기','강원','충북','충남','전북','전남','경북','경남','제주'];
+
+export const JOBS = [
+  {id:'jobseeker',name:'구직 중'},{id:'worker',name:'직장인'},{id:'self',name:'자영업·소상공인'},
+  {id:'prestart',name:'예비창업자'},{id:'fisher',name:'어업인'},{id:'fishhope',name:'귀어 희망'},
+  {id:'farmer',name:'농업인'},{id:'farmhope',name:'귀농 희망'},{id:'student',name:'대학생'}
+];
+
+export const P = [
+{id:'parent-pay',name:'부모급여',org:'보건복지부',cats:['birth'],region:'all',type:'현금',
+ target:'만 2세 미만(0~23개월) 아동을 키우는 가정',content:'영아 양육비를 매월 현금 지급(어린이집 이용 시 보육료 바우처 차감 후 차액 지급)',
+ amount:'만 0세 월 100만원 · 만 1세 월 50만원',income:'소득·재산 기준 없음',
+ period:{type:'always'},how:'복지로·정부24 온라인 또는 주소지 읍·면·동 행정복지센터. 출생일 포함 60일 이내 신청 시 출생월부터 소급',
+ docs:['신청서(행정복지센터 비치 / 온라인 작성)','신분증','통장 사본(지급 계좌)'],
+ url:'https://www.bokjiro.go.kr',contact:'보건복지상담센터 129',verify:'secondary',
+ rules:[{t:'child',max:1}]},
+
+{id:'child-allow',name:'아동수당',org:'보건복지부',cats:['birth'],region:'all',type:'현금',
+ target:'만 9세 미만 아동 (2026년 만 8세→9세 미만으로 확대)',content:'아동 1인당 매월 수당 지급. 2030년까지 매년 1세씩 대상 확대 예정',
+ amount:'월 10만원~13만원 (수도권·비수도권·인구감소지역에 따라 차등)',income:'소득·재산 기준 없음',
+ period:{type:'always'},how:'복지로·정부24 또는 읍·면·동 행정복지센터',
+ docs:['신청서','신분증','통장 사본'],url:'https://www.bokjiro.go.kr',contact:'보건복지상담센터 129',verify:'secondary',
+ rules:[{t:'child',max:8}]},
+
+{id:'first-meet',name:'첫만남이용권',org:'보건복지부',cats:['birth'],region:'all',type:'바우처',
+ target:'출생 신고된 아동',content:'국민행복카드에 바우처 포인트 지급. 출생일로부터 1년 이내 사용, 기한 지나면 소멸',
+ amount:'첫째 200만원 · 둘째 이상 300만원',income:'소득·재산 기준 없음',
+ period:{type:'always'},how:'복지로·정부24(출산 서비스 통합처리) 또는 행정복지센터',
+ docs:['신청서','국민행복카드(발급 신청 가능)'],url:'https://www.bokjiro.go.kr',contact:'보건복지상담센터 129',verify:'secondary',
+ rules:[{t:'child',max:0}]},
+
+{id:'idolbom',name:'아이돌봄서비스 정부지원',org:'성평등가족부',cats:['birth'],region:'all',type:'서비스',
+ target:'만 12세 이하 아동 가정 중 양육 공백 가정(맞벌이·한부모 등)',content:'아이돌보미가 가정을 방문해 돌봄. 이용요금 일부를 정부가 지원',
+ amount:'소득구간별 정부지원 비율 차등 (금액은 공식 안내 확인)',income:'2026년 정부지원 기준: 기준중위소득 250% 이하로 확대',
+ period:{type:'always'},how:'아이돌봄서비스 누리집 또는 행정복지센터',
+ docs:['신청서','소득 확인 서류(건강보험료 등)','맞벌이 증빙(재직증명 등)'],url:'https://idolbom.go.kr',contact:'1577-2514',verify:'secondary',
+ rules:[{t:'child',max:12},{t:'soft',label:'맞벌이·한부모 등 양육 공백 여부 확인'}]},
+
+{id:'youth-rent',name:'청년월세 지원',org:'국토교통부',cats:['youth','house'],region:'all',type:'현금',
+ target:'부모와 따로 사는 무주택 청년(연령·소득 기준은 공고 확인)',content:'월세 실납부액 지원. 2026년부터 한시 사업에서 상시 사업으로 전환',
+ amount:'월 최대 20만원 · 최대 24개월 (최대 480만원)',income:'청년가구·원가구 소득·재산 기준 있음 — 공고 확인',
+ period:{type:'always'},how:'복지로 온라인 또는 주소지 행정복지센터',
+ docs:['신청서','임대차계약서','월세 이체 내역','가족관계증명서'],url:'https://www.bokjiro.go.kr',contact:'마이홈 콜센터 1600-1004',verify:'secondary',
+ rules:[{t:'age',min:19,max:34},{t:'house',in:['rent']},{t:'soft',label:'청년·원가구 소득·재산 기준 확인 (주거급여와 중복 불가)'}]},
+
+{id:'kua',name:'국민취업지원제도 (구직촉진수당)',org:'고용노동부',cats:['job','youth'],region:'all',type:'현금',
+ target:'취업을 원하는 저소득 구직자·청년',content:'취업지원 서비스 + 구직활동 기간 구직촉진수당 지급(1유형)',
+ amount:null,amountNote:'출처 간 금액이 다름(월 50만원 / 2026년 60만원 인상 보도) — 고용24 공고로 확인',
+ income:'유형별 가구 소득·재산 기준 있음',
+ period:{type:'always'},how:'고용24 온라인 신청 또는 고용센터 방문',
+ docs:['참여 신청서','소득·재산 확인 동의'],url:'https://www.work24.go.kr',contact:'고용노동부 고객상담센터 1350',verify:'secondary',
+ rules:[{t:'job',in:['jobseeker']},{t:'age',min:15,max:69},{t:'soft',label:'유형별 소득·재산 기준 확인'}]},
+
+{id:'energy-voucher',name:'에너지바우처',org:'기후에너지환경부 · 한국에너지공단',cats:['energy','lowinc'],region:'all',type:'바우처',
+ target:'생계·의료·주거·교육급여 수급 세대 중 노인·영유아·장애인·임산부 등 세대원 특성 해당',content:'전기·도시가스·지역난방·등유·LPG·연탄 요금 지원. 2026년부터 여름·겨울 구분 없이 사용',
+ amount:'세대원 수별 연간 차등 · 1인 세대 약 29만5천원 ~ 4인 이상 최대 70만1,300원',income:'기초생활보장 급여 수급자',
+ period:{start:'2026-06-15',end:'2026-12-31'},how:'주소지 읍·면·동 행정복지센터 방문 신청',
+ docs:['신청서','신분증'],url:'https://www.energyv.or.kr',contact:'에너지바우처 콜센터 1600-3190',verify:'secondary',
+ rules:[{t:'income',in:['recipient']},{t:'soft',label:'세대원 특성(노인·영유아·장애인 등) 해당 여부 확인'}]},
+
+{id:'munhwa-nuri',name:'문화누리카드 (통합문화이용권)',org:'문화체육관광부',cats:['culture','lowinc'],region:'all',type:'바우처',
+ target:'만 6세 이상 기초생활수급자·차상위계층',content:'문화예술·국내여행·체육활동에 쓰는 카드. 사용기한 2026.12.31, 잔액은 이월 안 됨',
+ amount:'1인당 연 15만원 (청소년기·준고령기 생애주기 +1만원)',income:'기초생활수급자 또는 차상위계층',
+ period:{start:'2026-02-02',end:'2026-11-30'},how:'문화누리카드 누리집(mnuri.kr)·모바일앱·주민센터. 시군구 예산 소진 시 조기 마감',
+ docs:['신분증 (주민센터 방문 시)'],url:'https://www.mnuri.kr',contact:'고객지원센터 1544-3412',verify:'official',
+ source:'문화체육관광부 정책 안내 페이지 (최종수정 2026.02.02)',
+ rules:[{t:'age',min:6,max:120},{t:'income',in:['recipient','nearpoor']}]},
+
+{id:'basic-pension',name:'기초연금',org:'보건복지부',cats:['senior'],region:'all',type:'현금',
+ target:'만 65세 이상, 소득인정액 하위 70% 수준',content:'매월 연금 지급. 2026년 근로소득 공제액 116만원으로 상향',
+ amount:'기준연금액 월 349,700원 (소득·부부 여부에 따라 감액될 수 있음)',income:'소득인정액이 선정기준액 이하',
+ period:{type:'always'},how:'국민연금공단 지사·행정복지센터·복지로. 만 65세 생일 1개월 전부터 신청',
+ docs:['신청서','신분증','통장 사본','금융정보 제공 동의서'],url:'https://basicpension.mohw.go.kr',contact:'국민연금 1355 / 보건복지상담센터 129',verify:'secondary',
+ rules:[{t:'age',min:65,max:120},{t:'soft',label:'소득인정액 선정기준 확인'}]},
+
+{id:'eitc',name:'근로장려금',org:'국세청',cats:['lowinc','job'],region:'all',type:'세금환급',
+ target:'소득·재산 기준을 충족하는 근로·사업·종교인 소득 가구',content:'연 1회 정기신청(5월) + 근로소득자 반기신청(3월·9월)',
+ amount:null,amountNote:'가구 유형·총급여액에 따라 산정 — 홈택스 모의계산 이용',income:'가구별 총소득·재산 기준',
+ period:{type:'plan',note:'2026년 하반기 반기신청(9.1~9.15) 종료 · 다음 정기신청은 2027년 5월(국세청 공고 확인)'},
+ how:'홈택스·손택스 또는 ARS(1544-9944)',docs:['안내문 수신 시 별도 서류 대부분 불필요'],url:'https://www.hometax.go.kr',contact:'국세상담센터 126',verify:'secondary',
+ rules:[{t:'job',in:['worker','self','fisher','farmer']},{t:'soft',label:'가구 총소득·재산 기준 확인'}]},
+
+{id:'kosaf-27-1',name:'국가장학금 (2027학년도 1학기 1차)',org:'교육부 · 한국장학재단',cats:['edu','youth'],region:'all',type:'장학금',
+ target:'대한민국 국적 대학생(재학생은 1차 신청 원칙)',content:'소득구간에 따라 등록금 지원. 2027년 1학기부터 지원구간 10구간→5구간(가~마) 개편',
+ amount:'구간별 연 100만원 ~ 등록금 전액 (2026학년도 기준)',income:'학자금 지원구간(소득인정액) 기준',
+ period:{type:'plan',note:'2026년 11월 말~12월 말 예정 — 정확한 날짜는 한국장학재단 공고 확인'},
+ how:'한국장학재단 누리집·앱 신청 + 가구원 정보제공 동의',docs:['가구원 정보제공 동의','재단 요청 시 추가서류'],url:'https://www.kosaf.go.kr',contact:'1599-2000',verify:'secondary',
+ rules:[{t:'job',in:['student']}]},
+
+{id:'pre-startup-26',name:'예비창업패키지 (2026년도)',org:'중소벤처기업부 · 창업진흥원',cats:['startup'],region:'all',type:'사업화자금',
+ target:'공고일 기준 사업자등록·법인설립 이력 없는 예비창업자',content:'혁신 기술·BM 보유 예비창업자 사업화 자금·교육·멘토링',
+ amount:null,amountNote:'공고문 기준 — 2027년도 공고 확인',income:'해당 없음',
+ period:{start:'2026-02-27',end:'2026-03-24'},how:'K-Startup 누리집 온라인 접수',docs:['사업계획서(지정 양식)','증빙서류'],
+ url:'https://www.k-startup.go.kr',contact:'창업진흥원 1357',verify:'official',source:'중소벤처기업부 공고 제2026-143호(수정 공고)',
+ rules:[{t:'job',in:['prestart']}]},
+
+{id:'semas-loan',name:'소상공인 정책자금',org:'중소벤처기업부 · 소상공인시장진흥공단',cats:['smb'],region:'all',type:'융자',
+ target:'사업자등록을 한 소상공인',content:'2026년 역대 최대 5.4조원, 26개 부문으로 세분화된 저리 융자',
+ amount:null,amountNote:'자금 종류별 한도·금리 상이 — 공고 확인',income:'업종·업력·신용 등 자금별 기준',
+ period:{type:'notice',note:'자금별 접수 일정·예산 소진 여부 확인 필요'},how:'소상공인 정책자금 누리집 온라인 신청',
+ docs:['사업자등록증','부가세 과세표준증명','신분증'],url:'https://ols.semas.or.kr',contact:'소상공인 콜센터 1533-0100',verify:'secondary',
+ rules:[{t:'job',in:['self']}]},
+
+{id:'gwieo-loan',name:'귀어 창업 및 주택구입 지원 (융자)',org:'해양수산부 · 시·군·구',cats:['fish','startup','house'],region:'all',type:'융자',
+ target:'귀어업인(희망자 포함)·재촌비어업인, 사업신청 연도 기준 만 65세 이하',content:'수산업·어촌비즈니스 창업자금과 주택 구입·신축 자금 저리 융자 (이차보전)',
+ amount:'창업 최대 3억원 · 주택 최대 7,500만원 (5년 거치 10년 분할상환)',income:'금리는 지자체·연도 공고별 상이(연 1.5~2.0% 사례) · 금융기관 신용·담보 심사 별도',
+ period:{type:'notice',note:'시·군·구별 공고(연중 수차례). 거주 예정 지역 해양수산 부서 공고 확인'},
+ how:'귀어 예정지 시·군·구 해양수산 담당부서 방문 접수',docs:['신청서','사업계획서','귀어 교육 이수증','가족관계증명서'],
+ url:'https://www.sealife.go.kr',contact:'귀어귀촌종합센터 1899-9597',verify:'official',source:'인천광역시 귀어·귀촌 사업개요 페이지',
+ rules:[{t:'age',min:18,max:65},{t:'job',in:['fishhope','fisher']},{t:'soft',label:'귀어 교육 이수 시간 등 세부 요건 확인'}]},
+
+{id:'youth-fisher',name:'청년어업인 정착지원 (영어정착자금)',org:'해양수산부',cats:['fish','youth'],region:'all',type:'현금',
+ target:'어업 경력이 짧은 청년 어업인(연령 기준 공고 확인)',content:'청년 어업인 어촌 유입·정착을 위해 정착자금을 최장 3년 월별 지급',
+ amount:'1년차 월 110만원 · 2년차 월 100만원 · 3년차 월 90만원',income:'공고 기준 확인',
+ period:{type:'notice',note:'연 1회 내외 시·군·구 모집 — 2027년도 공고 확인'},how:'주소지 시·군·구 해양수산 담당부서',
+ docs:['신청서','어업경영체 등록 확인서','영어계획서'],url:'https://www.sealife.go.kr',contact:'귀어귀촌종합센터 1899-9597',verify:'official',source:'인천광역시 귀어·귀촌 정책 페이지',
+ rules:[{t:'age',min:18,max:39},{t:'job',in:['fisher','fishhope']},{t:'soft',label:'어업 경력·연령 상한 공고 확인'}]},
+
+{id:'fish-direct',name:'수산자원 보호 직접지불금',org:'해양수산부',cats:['fish'],region:'all',type:'현금',
+ target:'총허용어획량(TAC) 준수·자율 휴어 등 수산자원 보호 활동에 참여하는 연근해어선',content:'강화된 수산자원 보호 활동 참여 어업인에게 직불금 지급',
+ amount:null,amountNote:'어선 규모·활동별 산정 — 공고 확인',income:'해당 없음',
+ period:{start:'2026-01-01',end:'2026-12-31'},how:'관할 시·군·구 해양수산 담당부서',docs:['신청서','어선 관련 증빙'],
+ url:'https://www.mof.go.kr',contact:'해양수산부 044-200-5114',verify:'secondary',
+ rules:[{t:'job',in:['fisher']},{t:'soft',label:'연근해어선 보유·보호활동 참여 요건 확인'}]},
+
+{id:'youth-fishboat',name:'어선청년임대사업 (2026년)',org:'해양수산부 · 한국수산자원공단',cats:['fish','youth'],region:'all',type:'서비스',
+ target:'연안어업에 도전하는 청년 어업인',content:'어선 임대 연계 + 임차료 지원(2026년 지원 비율 상향, 어구 구입비 신규 지원)',
+ amount:null,amountNote:'임차료 지원 비율 공고 확인',income:'해당 없음',
+ period:{start:'2026-02-26',end:'2026-03-26'},how:'한국수산자원공단 접수',docs:['신청서','공고 지정 서류'],
+ url:'https://www.fira.or.kr',contact:'한국수산자원공단',verify:'secondary',
+ rules:[{t:'age',min:18,max:39},{t:'job',in:['fisher','fishhope']}]},
+
+{id:'youth-farmer',name:'청년농업인 영농정착지원 (2026년 1차)',org:'농림축산식품부',cats:['farm','youth'],region:'all',type:'현금',
+ target:'청년 창업농·후계농',content:'영농정착지원금 월별 지급 + 창업자금·교육·농지 연계',
+ amount:null,amountNote:'지침 기준 확인',income:'지침 기준 확인',
+ period:{type:'closed',note:'2026년 1차 모집은 2025.11.5 시작 후 종료 · 2027년도 모집 공고 확인'},how:'시·군 농업기술센터·농정 부서 / 온라인 접수',docs:['신청서','영농계획서'],
+ url:'https://www.mafra.go.kr',contact:'농림축산식품부 청년농육성정책팀',verify:'official',source:'농식품부 보도자료(2025.11.04)',
+ rules:[{t:'age',min:18,max:39},{t:'job',in:['farmer','farmhope']}]},
+
+{id:'youth-startup-fund',name:'청년전용창업자금',org:'중소벤처기업부 · 중소벤처기업진흥공단',cats:['startup','youth'],region:'all',type:'융자',
+ target:'만 39세 이하, 창업 3년 이내 청년 창업자(예비창업자 신청 가능)',content:'운전·시설자금 저리 융자 (거치 3년 + 상환 3년)',
+ amount:'최대 1억원 (연 3.0~3.5% 고정금리 보도 기준)',income:'업종 제한 있음(유흥·금융 등 제외)',
+ period:{type:'notice',note:'예산 소진 시 마감 — 중진공 접수 현황 확인'},how:'중소벤처기업진흥공단 온라인 신청 + 사업계획서 심사',
+ docs:['사업계획서','사업자등록증(예비창업자는 지원 전 등록)','추정 재무제표'],url:'https://www.kosmes.or.kr',contact:'중진공 1811-3655',verify:'secondary',
+ rules:[{t:'age',min:19,max:39},{t:'job',in:['prestart','self']}]},
+
+/* ---------- 강원특별자치도 · 강릉시 ---------- */
+{id:'gn-livelihood',name:'강릉시 민생안정지원금',org:'강릉시',cats:['local','lowinc'],region:'강원',city:'강릉시',type:'지역화폐',
+ target:'2026.9.30 기준 강릉시 거주 시민·영주권자·결혼이민자 (소득·재산·연령 무관)',content:'강릉페이로 1인당 10만원 충전. 연 매출 30억원 이하 강릉페이 가맹점에서 2027.2.28까지 사용',
+ amount:'1인당 10만원 (강릉페이)',income:'소득·재산 기준 없음',
+ period:{start:'2026-11-09',end:'2026-12-31'},how:'2007.12.31 이전 출생 성인은 개인별 신청, 미성년자는 세대주가 신청(세부 방법은 강릉시 공고)',
+ docs:['신분증','강릉페이 앱/카드'],url:'https://www.gn.go.kr',contact:'강릉시청 033-640-5114',verify:'secondary',
+ rules:[{t:'city',city:'강릉시'}]},
+
+{id:'gw-youth-startup-loan',name:'강원 청년창업자금 무이자 대출',org:'강원특별자치도 · 강원신용보증재단',cats:['local','startup','youth'],region:'강원',type:'융자',
+ target:'도내 청년 창업자(연령·업력 기준 공고 확인)',content:'창업자금 대출 이자를 5년간 도가 전액 지원. 2026년 규모 150억원(전년 대비 50% 확대)',
+ amount:'1인 최대 1억원 · 5년간 이자 전액 지원',income:'보증 심사 별도',
+ period:{type:'notice',note:'2026.3.16 접수 시작 · 예산 소진 여부를 강원신용보증재단에 확인'},how:'강원신용보증재단 보증 상담 후 협약은행 대출',
+ docs:['사업자등록증','신분증','공고 지정 서류'],url:'https://www.gwsinbo.or.kr',contact:'강원신용보증재단 1644-8001',verify:'secondary',
+ rules:[{t:'region',region:'강원'},{t:'age',min:19,max:39},{t:'job',in:['prestart','self']},{t:'soft',label:'청년 연령 상한·업력 기준 공고 확인'}]},
+
+{id:'gw-didimdol',name:'강원 청년 디딤돌 2배 적금 (2026년)',org:'강원특별자치도',cats:['local','youth','job'],region:'강원',type:'현금',
+ target:'도내 거주·도내 기업 근로 청년',content:'근로 청년이 저축하면 도가 저축장려금을 더해 자산 형성 지원. 2026년 신규 600명',
+ amount:null,amountNote:'적립·매칭 금액은 공고 확인',income:'소득·재산 수준 등 점수 선정',
+ period:{start:'2026-03-16',end:'2026-04-10'},how:'청년 디딤돌 2배 적금 누리집 온라인 신청',docs:['재직 증빙','주민등록 등본','공고 지정 서류'],
+ url:'https://double.gwwell.kr/youth',contact:'강원특별자치도',verify:'official',source:'강원특별자치도 공고 제2026-334호',
+ rules:[{t:'region',region:'강원'},{t:'age',min:19,max:39},{t:'job',in:['worker']}]},
+
+{id:'gw-student-loan-interest',name:'강원 청년·대학생 학자금대출 이자지원',org:'강원특별자치도',cats:['local','edu','youth'],region:'강원',type:'현금',
+ target:'만 39세 이하, 본인 또는 부모가 강원에 1년 이상 주민등록, 한국장학재단 학자금 대출자',content:'한국장학재단 학자금대출 이자 지원',
+ amount:null,amountNote:'지원 범위는 공고 확인',income:'공고 확인',
+ period:{type:'notice',note:'연도별 신청 기간 공고 확인'},how:'강원특별자치도 공고에 따라 온라인 신청',docs:['학자금 대출 내역','주민등록 초본'],
+ url:'https://state.gwd.go.kr',contact:'강원특별자치도',verify:'secondary',
+ rules:[{t:'region',region:'강원'},{t:'age',min:19,max:39},{t:'soft',label:'학자금 대출 보유·1년 이상 거주 요건 확인'}]},
+
+{id:'gw-parenting',name:'강원육아수당',org:'강원특별자치도',cats:['local','birth'],region:'강원',type:'현금',
+ target:'도내 거주 영유아 양육 가정(대상 연령 공고 확인)',content:'도 자체 육아수당. 2026년 예산 1,836억원 편성',
+ amount:null,amountNote:'월 지원액·대상 연령은 강원도 공고 확인',income:'공고 확인',
+ period:{type:'always'},how:'주소지 읍·면·동 행정복지센터',docs:['신청서','신분증','통장 사본'],
+ url:'https://state.gwd.go.kr',contact:'강원특별자치도 / 행정복지센터',verify:'secondary',
+ rules:[{t:'region',region:'강원'},{t:'child',max:5},{t:'soft',label:'대상 연령·금액 공고 확인'}]},
+
+{id:'gn-biz-loan',name:'강릉시 기업경영정책자금 이차보전',org:'강릉시',cats:['local','smb'],region:'강원',city:'강릉시',type:'융자',
+ target:'강릉시 소재 소상공인·중소기업',content:'금융기관 대출 융자 추천 + 이자 일부를 시가 3년간 보전',
+ amount:'업체당 최대 5억원 · 3년간 이자 2.5% 지원 (우대기업 3.0%)',income:'업종·신용 등 금융기관 심사',
+ period:{type:'notice',note:'2026년 하반기분 지원 확정(211곳) · 2027년 상반기 공고 확인'},how:'강릉시 공고에 따라 신청 → 융자 추천 → 협약 금융기관 대출',
+ docs:['사업자등록증','부가세 과세표준증명','공고 지정 서류'],url:'https://www.gn.go.kr',contact:'강릉시청 033-640-5114',verify:'secondary',
+ rules:[{t:'city',city:'강릉시'},{t:'job',in:['self']}]},
+
+{id:'gn-export-web',name:'강릉시 수출기업 홍보 웹사이트 입점',org:'강원특별자치도 · 강릉시',cats:['local','smb'],region:'강원',city:'강릉시',type:'서비스',
+ target:'강릉시에 본사 또는 공장이 있는 중소 제조 수출(준비) 기업',content:'수출기업 홍보 웹사이트 입점 지원',
+ amount:null,amountNote:'비금전 지원',income:'해당 없음',
+ period:{start:'2026-04-17',end:'2026-12-31'},how:'강릉시 공고에 따라 신청',docs:['공고 지정 서류'],
+ url:'https://www.gn.go.kr',contact:'강릉시청 033-640-5114',verify:'secondary',
+ rules:[{t:'city',city:'강릉시'},{t:'job',in:['self']},{t:'soft',label:'제조·수출(준비) 기업 여부 확인'}]},
+
+{id:'gw-ocean-startup',name:'강원해양수산창업투자지원사업 (2026 4차)',org:'강릉과학산업진흥원',cats:['local','fish','startup'],region:'강원',type:'사업화자금',
+ target:'도내 해양수산 연관산업(수산물 생산·가공·유통, 해양레저관광 등) 예비창업자·유망기업',content:'창업지원, 제품개발, 기술·마케팅 지원',
+ amount:null,amountNote:'공고 확인',income:'해당 없음',
+ period:{start:'2026-09-02',end:'2026-09-09'},how:'강릉과학산업진흥원 접수',docs:['사업계획서','공고 지정 서류'],
+ url:'https://www.gsipa.or.kr',contact:'강릉과학산업진흥원',verify:'official',source:'강릉과학산업진흥원 공고 제2026-96호',
+ rules:[{t:'region',region:'강원'},{t:'job',in:['prestart','self','fisher','fishhope']}]},
+];
+
+export const CITIES = {
+  '강원': ['춘천시','원주시','강릉시','동해시','태백시','속초시','삼척시','홍천군','횡성군','영월군','평창군','정선군','철원군','화천군','양구군','인제군','고성군','양양군'],
+};
+
