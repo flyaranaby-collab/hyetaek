@@ -148,7 +148,7 @@ export function createApp({ db, config, gov24Client = null, log = console.log })
             return send(res, 200, { sources: s, subscriptions: subs, lastSync: getMeta(db, 'gov24_last_sync') });
           }
           if (m('GET', /^\/api\/admin\/programs$/)) {
-            const out = listPrograms(db, { q: q.q, includeHidden: true, limit: Math.min(+q.limit || 100, 1000), offset: +q.offset || 0 });
+            const out = listPrograms(db, { q: q.q, includeHidden: true, includeRemoved: true, limit: Math.min(+q.limit || 100, 1000), offset: +q.offset || 0 });
             return send(res, 200, out);
           }
           if ((r = m('PATCH', /^\/api\/admin\/programs\/([\w-]{1,80})$/))) {

@@ -10,8 +10,30 @@ hyetaek/
 ├─ data/logic.mjs       신청 상태 계산 · 자격 비교 로직 (웹앱·서버 공용)
 ├─ web/template.html    모바일 웹앱 화면
 ├─ scripts/build-web.mjs 웹앱 빌드 → dist/index.html, server/public/index.html
+├─ scripts/build-site.mjs 휴대폰 앱(설치형) 사이트 조립 → site/
+├─ web/pwa/             앱 아이콘·설치 정보·오프라인 지원
+├─ .github/workflows/   매일 자동 수집 + GitHub Pages 배포
 └─ server/              공공데이터 API 수집 · 검색 API · 마감 알림 · 관리자
 ```
+
+## 휴대폰 앱으로 쓰기 (PC 서버 없이)
+
+GitHub가 매일 새벽 4시경 정부24 공공서비스 데이터를 자동으로 받아 앱에 넣어 줍니다(`.github/workflows/pages.yml`).
+
+**처음 한 번만 설정**
+1. 저장소 **Settings → Secrets and variables → Actions → New repository secret**
+   - Name: `DATA_GO_KR_KEY` / Secret: 공공데이터포털 일반 인증키(Decoding)
+2. 저장소 **Settings → Pages → Build and deployment → Source: GitHub Actions**
+3. **Actions** 탭 → "데이터 수집 및 앱 배포" → **Run workflow**
+
+몇 분 뒤 `https://<아이디>.github.io/hyetaek/` 에서 열립니다.
+
+**휴대폰에 설치**
+- 안드로이드(크롬): 주소를 열고 화면의 **[설치]** 버튼, 또는 메뉴(⋮) → **홈 화면에 추가 / 앱 설치**
+- 아이폰(사파리): 공유 버튼 → **홈 화면에 추가**
+
+설치하면 홈 화면 아이콘으로 전체 화면 앱처럼 열리고, 인터넷이 끊겨도 마지막으로 받은 사업 목록을 볼 수 있습니다.
+내 조건·할 일·서류 체크는 휴대폰 안에만 저장됩니다. 인증키는 GitHub 비밀값으로만 쓰이고 앱 파일에는 들어가지 않습니다.
 
 ## 서버 실행 (Windows / Mac / Linux 공통)
 

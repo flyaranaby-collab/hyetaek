@@ -1,0 +1,75 @@
+# 매일 새벽 정부24 공공서비스 데이터를 자동 수집해 휴대폰 앱(GitHub Pages)에 반영
+name: 데이터 수집 및 앱 배포
+
+on:
+  schedule:
+    - cron: '17 19 * * *'   # 매일 한국시간 새벽 4시 17분
+  workflow_dispatch:         # Actions 탭에서 'Run workflow'로 바로 실행
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # 지난번 수집 데이터베이스를 이어서 사용 (변경 이력·신규 공고 판단용)
+      - uses: actions/cache/restore@v4
+        with:
+          path: server/data
+          key: hyetaek-db-${{ github.run_id }}
+          restore-keys: hyetaek-db-
+
+      - name: 정부24 공공서비스 수집
+        continue-on-error: true
+        env:
+          DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
+        working-directory: server
+        run: |
+          if [ -z "$DATA_GO_KR_KEY" ]; then
+            echo "::warning::DATA_GO_KR_KEY 비밀값이 없어 내장 데이터만 배포합니다. Settings → Secrets and variables → Actions 에서 추가하세요."
+            exit 0
+          fi
+          # 일요일은 전체 수집(끝난 사업 정리), 나머지 날은 바뀐 것만
+          if [ "$(TZ=Asia/Seoul date +%u)" = "7" ]; then MODE=full; else MODE=; fi
+          node --disable-warning=ExperimentalWarning src/cli.js sync $MODE
+
+      - name: 앱 만들기
+        run: |
+          node scripts/build-web.mjs
+          node scripts/build-site.mjs
+          cd server && node --disable-warning=ExperimentalWarning src/cli.js export ../site/data
+
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: server/data
+          key: hyetaek-db-${{ github.run_id }}
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

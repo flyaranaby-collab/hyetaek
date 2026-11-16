@@ -23,7 +23,8 @@ export function parseRegion(orgName = '', orgType = '') {
 export function nameKey(name = '') {
   return String(name)
     .replace(/\(.*?\)|\[.*?\]/g, '')
-    .replace(/20\d\d\s*년?(도)?/g, '')
+    .replace(/20\d\d\s*년도?/g, '')        // '2026년', '2026년도'
+    .replace(/^\s*20\d\d\s+/, '')         // 맨 앞 '2026 ' (숫자만 단독으로 쓴 연도)
     .replace(/[^\p{L}\p{N}]/gu, '')
     .toLowerCase();
 }

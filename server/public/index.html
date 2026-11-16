@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="혜택찾기">
 <title>혜택찾기 — 내게 맞는 지원사업</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
@@ -183,6 +189,13 @@ nav a .dot{top:4px;right:calc(50% - 22px)}
 .kv dd{font-size:15.5px;margin-top:3px;word-break:keep-all}
 .warn{background:var(--gold-soft);color:#6d5313;border-radius:15px;padding:13px 15px;font-size:14.5px;margin-top:14px}
 .warn b{display:block;margin-bottom:2px}
+.install{display:flex;align-items:center;gap:12px;background:var(--blue-soft);border-radius:18px;padding:13px 15px;margin-top:14px}
+.install img{width:40px;height:40px;border-radius:11px}
+.install div{flex:1;font-size:14px;color:#1d3b8a;line-height:1.4}
+.install b{display:block;font-size:15.5px;color:var(--ink)}
+.install button{flex:none;background:var(--blue);color:#fff;font-weight:800;font-size:14.5px;border-radius:12px;padding:9px 14px}
+.install .no{background:none;color:var(--faint);padding:9px 4px;font-weight:600}
+.syncline{font-size:13px;color:var(--faint);margin-top:10px;text-align:center}
 .foot{font-size:12.5px;color:var(--faint);margin:26px 0 10px;line-height:1.6}
 </style>
 </head>
@@ -199,6 +212,7 @@ nav a .dot{top:4px;right:calc(50% - 22px)}
 
 <!-- 홈 -->
 <section class="view" id="v-home">
+  <div id="installBar"></div>
   <div class="pills" id="pills"></div>
   <div id="homeTop"></div>
   <div class="sub-title"><span id="listTitle"></span><small id="listCount"></small></div>
@@ -272,6 +286,7 @@ nav a .dot{top:4px;right:calc(50% - 22px)}
   <div class="hero"><div class="k">내 조건</div><div style="font-size:16px;font-weight:700;margin-top:4px" id="meCond"></div></div>
   <a class="btn" href="#setup" style="margin-top:12px">조건 수정하기</a>
   <button class="link" id="clearProfile" type="button">내 조건 지우기</button>
+  <div id="installMe"></div>
   <div class="sub-title">마감 알림 이메일<small>선택</small></div>
   <p class="desc" style="margin-bottom:10px">서버 버전에서만 보내져요. 비워두면 앱 알림에만 표시돼요.</p>
   <input class="field" type="email" id="pEmail" inputmode="email" placeholder="example@email.com">
@@ -612,6 +627,14 @@ function evaluate(p, prof = {}) {
   return { m: 'high', why: ['입력한 조건이 기본 자격과 일치'] };
 }
 
+// 사업 상세 파일 묶음 번호 (앱·내보내기 공용). id → '00'~'3f'
+const SHARDS = 64;
+function shardOf(id) {
+  let h = 0;
+  for (const ch of String(id)) h = (h * 31 + ch.codePointAt(0)) >>> 0;
+  return (h % SHARDS).toString(16).padStart(2, '0');
+}
+
 let SERVER = false;
 
 /* ---------- 유틸 ---------- */
@@ -752,7 +775,8 @@ function renderHome(){
   arr = arr.slice().sort(byStatus);
   $('#listTitle').textContent = title; $('#listCount').textContent = arr.length + '건';
   $('#homeList').innerHTML = arr.length ? rowsHtml(arr.slice(0, 10), {metaFn: meta}) : '<div class="empty">해당하는 사업이 없어요</div>';
-  $('#homeFoot').textContent = `수록 사업 ${P.length}건. 금액·기간은 반드시 공식 공고에서 한 번 더 확인하세요.`;
+  $('#homeFoot').textContent = `수록 사업 ${P.length.toLocaleString()}건${DATA_AT ? ` · ${DATA_AT} 정부24 자동 수집` : ''}. 금액·기간은 반드시 공식 공고에서 한 번 더 확인하세요.`;
+  renderInstall();
 }
 
 /* ---------- 할 일 ---------- */
@@ -935,8 +959,23 @@ function renderMe(){
 }
 
 /* ---------- 상세 ---------- */
+async function loadDetail(p){
+  const sh = shardOf(p.id);
+  try {
+    const r = await fetch(`data/d/${sh}.json`); if (!r.ok) throw 0;
+    const d = (await r.json())[p.id]; if (d) Object.assign(p, d);
+    p._slim = false; return true;
+  } catch(e) { return false; }
+}
 function openDetail(id){
   const p = byId(id); if (!p) return;
+  if (p._slim){
+    $('#sheet').innerHTML = '<div class="grab"></div><div class="empty">불러오는 중…</div>';
+    $('#sheet').classList.add('on'); $('#sheetBg').classList.add('on');
+    loadDetail(p).then(ok => { if (!$('#sheet').classList.contains('on')) return;
+      if (ok) openDetail(id); else $('#sheet').innerHTML = '<div class="grab"></div><div class="empty">상세 정보를 불러오지 못했어요.<br>인터넷 연결을 확인해 주세요.</div>'; });
+    return;
+  }
   const s = st(p), prof = getProfile(), ev = hasProfile(prof) ? evaluate(p, prof) : null;
   const fav = getFavs().includes(id), inTodo = !!getTodo()[id], ready = getReady();
   const vlab = p.verify === 'official' ? ['ok','공식 출처 확인'] : p.verify === 'gov24' ? ['b','정부24 공공서비스'] : ['chk','공식 원문 재확인 필요'];
@@ -955,7 +994,7 @@ function openDetail(id){
     <dl class="kv">
       <dt>지원 대상</dt><dd>${esc(p.target)}</dd>
       <dt>지원 내용</dt><dd>${esc(p.content)}</dd>
-      <dt>소득·재산 기준</dt><dd>${esc(p.income)}</dd>
+      <dt>소득·재산 기준</dt><dd>${esc(p.income || '공고문 확인')}</dd>
       <dt>신청 방법</dt><dd>${esc(p.how)}</dd>
       <dt>제출 서류</dt><dd>${docsOf(p).length ? docsOf(p).map(d => `<div class="doc ${ready[d] ? 'on' : ''}" data-doc="${esc(d)}" style="padding:10px 0"><span class="ck">${ready[d] ? '✓' : ''}</span><div><b style="font-size:15px">${esc(d)}</b></div></div>`).join('') : '공고문 확인'}</dd>
       <dt>문의</dt><dd>${esc(p.contact)}</dd>
@@ -963,7 +1002,7 @@ function openDetail(id){
     </dl>
     <div style="margin-top:24px">
       ${s.k === 'closed' ? '' : `<button class="btn ${inTodo ? 'line' : 'blue'}" id="todoBtn">${inTodo ? '✓ 할 일에 담겨 있어요' : '신청 준비하기'}</button>`}
-      <a class="btn line" href="${esc(p.url)}" target="_blank" rel="noopener">공식 공고 보기 ↗</a>
+      ${p.url ? `<a class="btn line" href="${esc(p.url)}" target="_blank" rel="noopener">공식 공고 보기 ↗</a>` : ''}
       <button class="btn line" id="favBtn">${fav ? '★ 관심 사업 해제' : '☆ 관심 사업으로 저장'}</button>
     </div>`;
   $('#sheet').classList.add('on'); $('#sheetBg').classList.add('on'); $('#sheet').scrollTop = 0;
@@ -1056,6 +1095,46 @@ $('#clearProfile').addEventListener('click', e => {
 $('#pEmail').addEventListener('change', () => { store.set('hx_email', $('#pEmail').value.trim()); [...getFavs(), ...Object.keys(getTodo())].forEach(id => syncSubscription(id, true)); });
 window.addEventListener('hashchange', route);
 
+/* ---------- 설치(홈 화면에 추가) ---------- */
+let installEvt = null;
+const standalone = () => (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone;
+const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; renderInstall(); });
+window.addEventListener('appinstalled', () => { installEvt = null; renderInstall(); });
+function installHtml(withClose){
+  if (standalone() || !/^https?:$/.test(location.protocol)) return '';
+  if (!installEvt && !isIOS) return '';
+  return `<div class="install"><img src="icon-192.png" alt=""><div><b>휴대폰에 앱으로 설치</b>${isIOS && !installEvt ? '공유 버튼 → ‘홈 화면에 추가’를 누르세요' : '홈 화면 아이콘으로 바로 열려요'}</div>
+    ${installEvt ? '<button data-install>설치</button>' : ''}${withClose ? '<button class="no" data-noinstall>닫기</button>' : ''}</div>`;
+}
+function renderInstall(){
+  const bar = $('#installBar'); if (bar) bar.innerHTML = store.get('hx_noinstall', false) ? '' : installHtml(true);
+  const me = $('#installMe'); if (me) me.innerHTML = installHtml(false);
+}
+document.addEventListener('click', async e => {
+  if (e.target.closest('[data-install]') && installEvt){ installEvt.prompt(); await installEvt.userChoice; installEvt = null; renderInstall(); }
+  if (e.target.closest('[data-noinstall]')){ store.set('hx_noinstall', true); renderInstall(); }
+});
+if ('serviceWorker' in navigator && window.isSecureContext && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => {});
+
+/* ---------- 사업 데이터 불러오기 ----------
+   1) data/index.json : GitHub가 매일 정부24에서 자동 수집해 만든 파일 (휴대폰 앱)
+   2) api/programs    : PC에서 돌리는 서버 (start.bat)
+   둘 다 없으면 내장 데이터만 사용 */
+let DATA_AT = '';
+function mergeItems(items, slim){
+  const idx = new Map(P.map((p, i) => [p.id, i]));
+  for (const it of items){
+    if (idx.has(it.id)){ P[idx.get(it.id)].lastChecked = it.lastChecked; continue; }
+    if (slim){ it.target = it.t || ''; it.content = it.c || ''; it.docs = []; it._slim = true; }
+    P.push(it);
+  }
+  FIRST_LOAD = items.map(it => it.firstSeen).filter(Boolean).sort()[0] || '';
+}
+async function getJson(url, ms){
+  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), ms);
+  try { const r = await fetch(url, {signal: ctl.signal}); return r.ok ? await r.json() : null; } catch(e) { return null; } finally { clearTimeout(t); }
+}
 /* 초기화 */
 $('#lastChecked').textContent = LAST_CHECKED.replaceAll('-', '.');
 $('#fCat').innerHTML += CATS.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
@@ -1063,22 +1142,22 @@ $('#fRegion').innerHTML += REGIONS.map(r => `<option>${r}</option>`).join('');
 $('#fKind').innerHTML += KINDS.map(k => `<option value="${k.id}">${k.name}</option>`).join('');
 route();
 
-/* 서버 모드: /api 가 있으면 공공데이터 API로 수집된 최신 사업을 합친다. 없으면 내장 데이터만 사용 */
 (async () => {
   if (!/^https?:$/.test(location.protocol)) return;
-  try {
-    const ctl = new AbortController(); setTimeout(() => ctl.abort(), 4000);
-    const r = await fetch('api/programs?limit=5000', {signal: ctl.signal});
-    if (!r.ok) return;
-    const j = await r.json();
-    if (!Array.isArray(j.items)) return;
-    const idx = new Map(P.map((p, i) => [p.id, i]));
-    for (const it of j.items) { if (idx.has(it.id)) P[idx.get(it.id)].lastChecked = it.lastChecked; else P.push(it); }
-    FIRST_LOAD = j.items.map(it => it.firstSeen).filter(Boolean).sort()[0] || '';
-    SERVER = true;
-    if (j.lastSync) $('#lastChecked').textContent = j.lastSync.slice(0, 10).replaceAll('-', '.') + ' (자동 수집)';
+  const st = await getJson('data/index.json', 15000);
+  if (st && Array.isArray(st.items) && st.items.length){
+    mergeItems(st.items, true);
+    const at = st.lastSync || st.generated;
+    if (at && st.lastSync) DATA_AT = at.slice(0, 10).replaceAll('-', '.');
+    $('#lastChecked').textContent = (at || '').slice(0, 10).replaceAll('-', '.') + (st.lastSync ? ' (자동 수집)' : '');
+    return refresh();
+  }
+  const j = await getJson('api/programs?limit=100000', 6000);
+  if (j && Array.isArray(j.items)){
+    mergeItems(j.items, false); SERVER = true;
+    if (j.lastSync){ DATA_AT = j.lastSync.slice(0, 10).replaceAll('-', '.'); $('#lastChecked').textContent = DATA_AT + ' (자동 수집)'; }
     refresh();
-  } catch(e) { /* 오프라인·아티팩트 환경: 내장 데이터 유지 */ }
+  }
 })();
 </script>
 </body>

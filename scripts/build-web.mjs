@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const strip = src => src.replace(/^import .*$/gm, '').replace(/^export /gm, '');
-const data = strip(readFileSync(join(root, 'data/catalog.mjs'), 'utf8')) + '\n' + strip(readFileSync(join(root, 'data/logic.mjs'), 'utf8'));
+const data = ['catalog', 'logic', 'shard'].map(f => strip(readFileSync(join(root, `data/${f}.mjs`), 'utf8'))).join('\n');
 const html = readFileSync(join(root, 'web/template.html'), 'utf8').replace('/*__DATA__*/', () => data);
 for (const out of ['dist/index.html', 'server/public/index.html']) {
   mkdirSync(dirname(join(root, out)), { recursive: true });

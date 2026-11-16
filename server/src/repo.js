@@ -85,9 +85,10 @@ const toItem = r => {
 };
 
 /** 목록 조회 (텍스트·지역은 SQL, 상태·분야는 계산 후 필터) */
-export function listPrograms(db, { q, cat, region, city, status, type, includeHidden = false, limit = 50, offset = 0, today = startOfDay() } = {}) {
+export function listPrograms(db, { q, cat, region, city, status, type, includeHidden = false, includeRemoved = false, limit = 50, offset = 0, today = startOfDay() } = {}) {
   const where = ['dup_of IS NULL'], args = [];
   if (!includeHidden) where.push('hidden = 0');
+  if (!includeRemoved) where.push('removed_at IS NULL'); // 원천에서 사라진(종료) 사업은 기본 제외
   if (q) { where.push('(name LIKE ? OR org LIKE ? OR data LIKE ?)'); const like = `%${q}%`; args.push(like, like, like); }
   if (region) { where.push("(region = 'all' OR region = ?)"); args.push(region); }
   if (city) { where.push('(city IS NULL OR city = ?)'); args.push(city); }
